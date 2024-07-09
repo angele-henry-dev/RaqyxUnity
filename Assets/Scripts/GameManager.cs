@@ -22,10 +22,16 @@ public class GameManager : MonoBehaviour
 
         score++;
         UpdateScore();
+        HighlightScore();
     }
 
     public void UpdateScore()
     {
         scoreText.SetScore(score);
+    }
+
+    public void HighlightScore()
+    {
+        scoreText.Highlight();
     }
 }

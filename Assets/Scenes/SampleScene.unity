@@ -511,7 +511,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: 0
-  scoreText: {fileID: 1505701663}
+  scoreText: {fileID: 1505701666}
 --- !u!1 &1062149429 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7636851971227107751, guid: 5f876d48f846044eb89a6ae24d0ab1c2, type: 3}
@@ -527,40 +527,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8264277178033116183, guid: 5f876d48f846044eb89a6ae24d0ab1c2, type: 3}
   m_PrefabInstance: {fileID: 2487237996878722801}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1505701659 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1216352364330188732, guid: 893fb36652c48497ebdc7863d7305665, type: 3}
-  m_PrefabInstance: {fileID: 1539387247494924168}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1505701660 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1747223878255913364, guid: 893fb36652c48497ebdc7863d7305665, type: 3}
   m_PrefabInstance: {fileID: 1539387247494924168}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1505701661 stripped
+--- !u!114 &1505701666 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7619855924549280957, guid: 893fb36652c48497ebdc7863d7305665, type: 3}
+  m_CorrespondingSourceObject: {fileID: 1521525382347090368, guid: 893fb36652c48497ebdc7863d7305665, type: 3}
   m_PrefabInstance: {fileID: 1539387247494924168}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1505701659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1505701663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1505701659}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1ec8e066a8624b85a7f93afa4243807, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 1505701661}
 --- !u!1 &1536594515
 GameObject:
   m_ObjectHideFlags: 0
@@ -1053,13 +1035,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7619855924549280957, guid: 893fb36652c48497ebdc7863d7305665, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1216352364330188732, guid: 893fb36652c48497ebdc7863d7305665, type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 1505701663}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 893fb36652c48497ebdc7863d7305665, type: 3}
 --- !u!1001 &2487237996878722801
 PrefabInstance:
