@@ -21,18 +21,17 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        GameManager.instance.onReset += ResetPosition;
+        GameManager.instance.gameUI.onStartGame += InitialPush;
+    }
+
+    private void InitialPush()
+    {
         minStartY = southWall.transform.position.y + ballSize + 0.1f;
         maxStartY = northWall.transform.position.y - ballSize - 0.1f;
         minStartX = westWall.transform.position.x + ballSize + 0.1f;
         maxStartX = eastWall.transform.position.x - ballSize - 0.1f;
         ResetPosition();
-        GameManager.instance.onReset += ResetPosition;
-    }
-
-    // Update is called once per frame
-    private void Update()
-    {
-        //
     }
 
     private void ResetPosition()

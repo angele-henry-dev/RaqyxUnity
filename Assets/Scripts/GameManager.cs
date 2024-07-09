@@ -4,8 +4,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    public GameUI gameUI;
     public int score;
-    public ScoreText scoreText;
     public System.Action onReset;
 
     private void Awake()
@@ -21,17 +21,7 @@ public class GameManager : MonoBehaviour
         onReset?.Invoke();
 
         score++;
-        UpdateScore();
-        HighlightScore();
-    }
-
-    public void UpdateScore()
-    {
-        scoreText.SetScore(score);
-    }
-
-    public void HighlightScore()
-    {
-        scoreText.Highlight();
+        gameUI.UpdateScore(score);
+        gameUI.HighlightScore();
     }
 }
