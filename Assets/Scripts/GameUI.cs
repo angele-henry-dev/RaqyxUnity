@@ -5,6 +5,7 @@ public class GameUI : MonoBehaviour
     public ScoreText scoreText;
     public GameObject menuObject;
     public TMPro.TextMeshProUGUI winText;
+    public TMPro.TextMeshProUGUI volumeValueText;
 
     public System.Action onStartGame;
 
@@ -28,5 +29,11 @@ public class GameUI : MonoBehaviour
     {
         menuObject.SetActive(true);
         winText.text = "Level won!";
+    }
+
+    public void OnVolumeChanged(float value)
+    {
+        AudioListener.volume = value;
+        volumeValueText.text = $"{Mathf.RoundToInt(value * 100)} %";
     }
 }
