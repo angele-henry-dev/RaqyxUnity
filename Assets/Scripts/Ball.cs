@@ -7,6 +7,7 @@ public class Ball : MonoBehaviour
     public GameObject southWall;
     public GameObject westWall;
     public GameObject eastWall;
+    public ParticleSystem collisionParticle;
 
     public float maxInitialAngle = 0.67f;
     public float moveSpeed = 1f;
@@ -48,25 +49,41 @@ public class Ball : MonoBehaviour
         transform.position = position;
 
         Vector2 dir = Random.value < 0.5f ? Vector2.left : Vector2.right;
-        //dir.y = Random.value < 0.5f ? -maxInitialAngle : maxInitialAngle;
-        dir.y = Random.Range(-maxInitialAngle, maxInitialAngle);
+        dir.y = Random.value < 0.5f ? -maxInitialAngle : maxInitialAngle;
+        //dir.y = Random.Range(-maxInitialAngle, maxInitialAngle);
         rb2d.velocity = dir * moveSpeed;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        /*
         Player player = collision.GetComponent<Player>();
         if (player)
         {
             Debug.Log("Game over!");
             GameManager.instance.IncreaseScore();
+            EmitParticle(8);
         }
+        */
 
-        /* if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
+            EmitParticle(8);
             Debug.Log("Game over!");
-            gameManager.IncreaseScore();
-            ResetBall();
-        } */
+            GameManager.instance.IncreaseScore();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            EmitParticle(8);
+        }
+    }
+
+    private void EmitParticle(int amount)
+    {
+        collisionParticle.Emit(amount);
     }
 }
