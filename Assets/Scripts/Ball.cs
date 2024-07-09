@@ -69,6 +69,7 @@ public class Ball : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             EmitParticle(8);
+            GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
             Debug.Log("Game over!");
             GameManager.instance.IncreaseScore();
         }

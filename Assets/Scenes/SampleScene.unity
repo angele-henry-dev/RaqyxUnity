@@ -710,6 +710,7 @@ GameObject:
   m_Component:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
+  - component: {fileID: 519420033}
   - component: {fileID: 519420029}
   m_Layer: 0
   m_Name: Main Camera
@@ -792,6 +793,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a5a1a9a99a2410b9431b010e311442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &523801787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1253,7 +1266,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 793305876}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -1529,6 +1542,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameUI: {fileID: 793305881}
   gameAudio: {fileID: 859462582}
+  screenShake: {fileID: 519420033}
   score: 0
   maxScore: 4
 --- !u!114 &859462582
