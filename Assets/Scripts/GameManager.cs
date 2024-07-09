@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public GameUI gameUI;
+    public GameAudio gameAudio;
     public int score;
     public System.Action onReset;
     public int maxScore = 4;
@@ -37,9 +38,11 @@ public class GameManager : MonoBehaviour
     {
         if (score == maxScore)
         {
+            instance.gameAudio.PlayWinLevelSound();
             gameUI.OnGameEnds();
         } else
         {
+            instance.gameAudio.PlayHitPlayerSound();
             onReset?.Invoke();
         }
     }
