@@ -6,6 +6,7 @@ public class GameUI : MonoBehaviour
 {
     public ScoreText scoreText;
     public GameObject menuObject;
+    public TMPro.TextMeshProUGUI winText;
 
     public System.Action onStartGame;
 
@@ -23,5 +24,11 @@ public class GameUI : MonoBehaviour
     {
         menuObject.SetActive(false);
         onStartGame?.Invoke();
+    }
+
+    public void OnGameEnds()
+    {
+        menuObject.SetActive(true);
+        winText.text = "Level won!";
     }
 }
