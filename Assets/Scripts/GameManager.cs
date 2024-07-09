@@ -9,6 +9,14 @@ public class GameManager : MonoBehaviour
     public System.Action onReset;
     public int maxScore = 4;
 
+    public void IncreaseScore()
+    {
+        score++;
+        gameUI.UpdateScore(score);
+        gameUI.HighlightScore();
+        CheckWin();
+    }
+
     private void Awake()
     {
         if (instance)
@@ -20,12 +28,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void IncreaseScore()
+    private void OnDestroy()
     {
-        score++;
-        gameUI.UpdateScore(score);
-        gameUI.HighlightScore();
-        CheckWin();
+        gameUI.onStartGame -= OnStartGame;
     }
 
     private void CheckWin()

@@ -13,6 +13,11 @@ public class Player : MonoBehaviour
         GameManager.instance.onReset += ResetPosition;
     }
 
+    private void OnDestroy()
+    {
+        GameManager.instance.onReset -= ResetPosition;
+    }
+
     private void ResetPosition()
     {
         transform.position = startPosition;

@@ -25,6 +25,12 @@ public class Ball : MonoBehaviour
         GameManager.instance.gameUI.onStartGame += InitialPush;
     }
 
+    private void OnDestroy()
+    {
+        GameManager.instance.onReset -= ResetPosition;
+        GameManager.instance.gameUI.onStartGame -= InitialPush;
+    }
+
     private void InitialPush()
     {
         minStartY = southWall.transform.position.y + ballSize + 0.1f;
