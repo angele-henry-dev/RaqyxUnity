@@ -1238,7 +1238,7 @@ TrailRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Time: 0.2
   m_PreviewTimeScale: 1
   m_Parameters:
@@ -1270,7 +1270,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0, b: 0, a: 1}
+      key0: {r: 1, g: 1, b: 1, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -12631,10 +12631,6 @@ PrefabInstance:
     - target: {fileID: 228142802142487215, guid: 0a666beaf667e47c6a06223fa685d226, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1260844457020958016, guid: 0a666beaf667e47c6a06223fa685d226, type: 3}
-      propertyPath: m_CollisionDetection
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2277458368257307385, guid: 0a666beaf667e47c6a06223fa685d226, type: 3}
       propertyPath: eastWall
