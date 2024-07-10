@@ -6,13 +6,7 @@ public class Ball : MonoBehaviour
     [SerializeField]
     private Rigidbody2D rb2d;
     [SerializeField]
-    private GameObject northWall;
-    [SerializeField]
-    private GameObject southWall;
-    [SerializeField]
-    private GameObject westWall;
-    [SerializeField]
-    private GameObject eastWall;
+    private GameObject northWall, southWall, westWall, eastWall;
     [SerializeField]
     private ParticleSystem collisionParticle;
 
