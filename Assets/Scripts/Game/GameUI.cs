@@ -6,6 +6,8 @@ public class GameUI : MonoBehaviour
     [SerializeField]
     private GameObject menuObject;
     [SerializeField]
+    private GameObject quitButton;
+    [SerializeField]
     private ScoreText scoreText;
     [SerializeField]
     private TMPro.TextMeshProUGUI winText;
@@ -14,6 +16,17 @@ public class GameUI : MonoBehaviour
 
     public System.Action onStartGame;
 
+    private void Start()
+    {
+        CheckDisableQuitButton();
+    }
+
+    private void CheckDisableQuitButton()
+    {
+#if UNITY_WEBGL
+        quitButton.SetActive(false);
+#endif
+    }
 
     public void UpdateScore(int score)
     {
@@ -31,15 +44,20 @@ public class GameUI : MonoBehaviour
         onStartGame?.Invoke();
     }
 
-    public void OnGameEnds()
+    public void OnQuitButtonClicked()
     {
-        menuObject.SetActive(true);
-        winText.text = "Level won!";
+        Application.Quit();
     }
 
     public void OnVolumeChanged(float value)
     {
         AudioListener.volume = value;
         volumeValueText.text = $"{Mathf.RoundToInt(value * 100)} %";
+    }
+
+    public void OnGameEnds()
+    {
+        menuObject.SetActive(true);
+        winText.text = "Level won!";
     }
 }
