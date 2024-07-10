@@ -2,9 +2,15 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Rigidbody2D rb2d;
-    public SpriteRenderer spriteRenderer;
-    public float moveSpeed = 1f;
+    [Header("Refs")]
+    [SerializeField]
+    private Rigidbody2D rb2d;
+    [SerializeField]
+    private SpriteRenderer spriteRenderer;
+
+    [Header("Config")]
+    [SerializeField]
+    private float moveSpeed = 1f;
 
     private Vector3 startPosition;
 

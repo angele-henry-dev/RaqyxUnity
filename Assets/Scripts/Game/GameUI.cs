@@ -2,12 +2,18 @@ using UnityEngine;
 
 public class GameUI : MonoBehaviour
 {
-    public ScoreText scoreText;
-    public GameObject menuObject;
-    public TMPro.TextMeshProUGUI winText;
-    public TMPro.TextMeshProUGUI volumeValueText;
+    [Header("Refs")]
+    [SerializeField]
+    private GameObject menuObject;
+    [SerializeField]
+    private ScoreText scoreText;
+    [SerializeField]
+    private TMPro.TextMeshProUGUI winText;
+    [SerializeField]
+    private TMPro.TextMeshProUGUI volumeValueText;
 
     public System.Action onStartGame;
+
 
     public void UpdateScore(int score)
     {

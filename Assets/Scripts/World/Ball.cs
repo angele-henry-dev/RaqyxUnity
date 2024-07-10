@@ -2,24 +2,35 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    public Rigidbody2D rb2d;
-    public GameObject northWall;
-    public GameObject southWall;
-    public GameObject westWall;
-    public GameObject eastWall;
-    public ParticleSystem collisionParticle;
+    [Header("Refs")]
+    [SerializeField]
+    private Rigidbody2D rb2d;
+    [SerializeField]
+    private GameObject northWall;
+    [SerializeField]
+    private GameObject southWall;
+    [SerializeField]
+    private GameObject westWall;
+    [SerializeField]
+    private GameObject eastWall;
+    [SerializeField]
+    private ParticleSystem collisionParticle;
 
-    public float maxInitialAngle = 0.67f;
-    public float moveSpeed = 1f;
+    [Header("Config")]
+    [Range(0f, 1f)]
+    [SerializeField]
+    private float maxInitialAngle = 0.67f;
+    [SerializeField]
+    private float moveSpeed = 1f;
 
     private float minStartY;
     private float maxStartY;
     private float minStartX;
     private float maxStartX;
-    private float ballSize = 0.2f;
+
+    private readonly float ballSize = 0.2f;
     // private List<Vector2> directions = new List<Vector2> { Vector2.left, Vector2.right };
 
-    // Start is called before the first frame update
     private void Start()
     {
         GameManager.instance.onReset += ResetPosition;

@@ -4,10 +4,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    [Header("Refs")]
     public GameUI gameUI;
     public GameAudio gameAudio;
     public Shake screenShake;
 
+    [Header("Config")]
     public int score;
     public System.Action onReset;
     public int maxScore = 4;

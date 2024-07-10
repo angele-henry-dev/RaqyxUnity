@@ -2,9 +2,13 @@ using UnityEngine;
 
 public class GameAudio : MonoBehaviour
 {
-    public AudioSource asSounds;
-    public AudioClip hitPlayerSound;
-    public AudioClip winLevelSound;
+    [Header("Refs")]
+    [SerializeField]
+    private AudioSource asSounds;
+    [SerializeField]
+    private AudioClip hitPlayerSound;
+    [SerializeField]
+    private AudioClip winLevelSound;
 
     public void PlayHitPlayerSound()
     {

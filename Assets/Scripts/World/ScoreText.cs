@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class ScoreText : MonoBehaviour
 {
-    public TMPro.TextMeshProUGUI text;
-    public Animator animator;
+    [Header("Refs")]
+    [SerializeField]
+    private TMPro.TextMeshProUGUI text;
+    [SerializeField]
+    private Animator animator;
 
     public void Highlight()
     {

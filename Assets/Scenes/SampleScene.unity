@@ -312,12 +312,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 108412050}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.04108068, y: -1.5972383, z: 0.06595699}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 295895501}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &268047450
 GameObject:
@@ -368,6 +368,39 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   priority: 0
+--- !u!1 &295895500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 295895501}
+  m_Layer: 0
+  m_Name: UI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &295895501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 295895500}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.04108068, y: 1.5972383, z: -0.06595699}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 793305880}
+  - {fileID: 108412053}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &297224324
 GameObject:
   m_ObjectHideFlags: 0
@@ -1262,7 +1295,7 @@ RectTransform:
   m_Children:
   - {fileID: 1505701660}
   - {fileID: 859097598}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 295895501}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1281,8 +1314,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83838f8b24946441881e8ab9c769ea89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreText: {fileID: 1505701666}
   menuObject: {fileID: 859097597}
+  scoreText: {fileID: 1505701666}
   winText: {fileID: 1555900588}
   volumeValueText: {fileID: 851011118}
 --- !u!1 &851011116
@@ -7867,5 +7900,4 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 859462580}
   - {fileID: 523801788}
-  - {fileID: 793305880}
-  - {fileID: 108412053}
+  - {fileID: 295895501}
