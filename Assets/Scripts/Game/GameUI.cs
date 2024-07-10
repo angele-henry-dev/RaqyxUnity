@@ -23,7 +23,7 @@ public class GameUI : MonoBehaviour
 
     private void CheckDisableQuitButton()
     {
-#if UNITY_WEBGL
+#if DEBUG
         quitButton.SetActive(false);
 #endif
     }
