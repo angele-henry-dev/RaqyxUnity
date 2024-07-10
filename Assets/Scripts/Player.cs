@@ -13,6 +13,14 @@ public class Player : MonoBehaviour
         GameManager.instance.onReset += ResetPosition;
     }
 
+    private void Update()
+    {
+        float[] movements = ProcessInput();
+        Move(movements);
+        Debug.DrawLine(new Vector3(movements[0], movements[1]), transform.position);
+        //Debug.Break();
+    }
+
     private void OnDestroy()
     {
         GameManager.instance.onReset -= ResetPosition;
@@ -21,12 +29,6 @@ public class Player : MonoBehaviour
     private void ResetPosition()
     {
         transform.position = startPosition;
-    }
-
-    private void Update()
-    {
-        float[] movements = ProcessInput();
-        Move(movements);
     }
 
     private float[] ProcessInput()
