@@ -8,9 +8,11 @@ public class ScoreText : MonoBehaviour
     [SerializeField]
     private Animator animator;
 
+    private const string triggerHightlight = "highlight";
+
     public void Highlight()
     {
-        animator.SetTrigger("highlight");
+        animator.SetTrigger(triggerHightlight);
     }
 
     public void SetScore(int value)

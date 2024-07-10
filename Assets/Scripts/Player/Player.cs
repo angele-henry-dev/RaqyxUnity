@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     private float moveSpeed = 1f;
 
     private Vector3 startPosition;
+    private const string axisHorizontal = "Horizontal";
+    private const string axisVertical = "Vertical";
 
     private void Start()
     {
@@ -40,7 +42,7 @@ public class Player : MonoBehaviour
 
     private float[] ProcessInput()
     {
-        float[] movements = { Input.GetAxis("Horizontal"), Input.GetAxis("Vertical") };
+        float[] movements = { Input.GetAxis(axisHorizontal), Input.GetAxis(axisVertical) };
 
         if (Mathf.Abs(movements[0]) > Mathf.Abs(movements[1]))
         {

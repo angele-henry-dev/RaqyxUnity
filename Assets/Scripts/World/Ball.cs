@@ -22,7 +22,9 @@ public class Ball : MonoBehaviour
     private float minStartX;
     private float maxStartX;
 
-    private readonly float ballSize = 0.2f;
+    private const float ballSize = 0.2f;
+    private const string tagPlayer = "Player";
+    private const string tagWall = "Wall";
     // private List<Vector2> directions = new List<Vector2> { Vector2.left, Vector2.right };
 
     private void Start()
@@ -50,7 +52,7 @@ public class Ball : MonoBehaviour
     {
         float posY = Random.Range(minStartY, maxStartY);
         float posX = Random.Range(minStartX, maxStartX);
-        Vector2 position = new Vector2(posX, posY);
+        Vector2 position = new(posX, posY);
         transform.position = position;
 
         Vector2 dir = Random.value < 0.5f ? Vector2.left : Vector2.right;
@@ -71,7 +73,7 @@ public class Ball : MonoBehaviour
         }
         */
 
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag(tagPlayer))
         {
             EmitParticle(8);
             GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
@@ -82,7 +84,7 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag(tagWall))
         {
             EmitParticle(8);
         }
