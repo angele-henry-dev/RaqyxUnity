@@ -7,9 +7,17 @@ public class GameManager : MonoBehaviour
     public GameUI gameUI;
     public GameAudio gameAudio;
     public Shake screenShake;
+
     public int score;
     public System.Action onReset;
     public int maxScore = 4;
+
+    public GameMode gameMode = GameMode.NORMAL;
+
+    public enum GameMode
+    {
+        NORMAL
+    }
 
     public void IncreaseScore()
     {
