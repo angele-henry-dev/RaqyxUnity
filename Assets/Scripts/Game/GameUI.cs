@@ -23,7 +23,7 @@ public class GameUI : MonoBehaviour
 
     private void CheckDisableQuitButton()
     {
-#if DEBUG
+#if UNITY_EDITOR
         quitButton.SetActive(false);
 #endif
     }
