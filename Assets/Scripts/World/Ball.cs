@@ -84,10 +84,11 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag(tagWall))
+        EmitParticle(8);
+        /*if (collision.gameObject.CompareTag(tagWall))
         {
             EmitParticle(8);
-        }
+        }*/
     }
 
     private void EmitParticle(int amount)
