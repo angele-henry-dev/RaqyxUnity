@@ -16,6 +16,7 @@ public class TerritoryGenerator : MonoBehaviour
     private void GeneratePolygon()
     {
         shape.settings.fillColor = Color.clear;
+        shape.settings.outlineColor = Color.white;
 
         // Creation of the points
         List<Vector2> points = new();
