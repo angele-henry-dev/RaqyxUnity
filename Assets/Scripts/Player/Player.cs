@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb2d;
     [SerializeField]
     private SpriteRenderer spriteRenderer;
+    [SerializeField]
+    private PolygonGenerator territory;
 
     [Header("Config")]
     [SerializeField]
@@ -16,18 +18,33 @@ public class Player : MonoBehaviour
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
 
+    private Vector2[] territoryPoints;
+    private int currentPointIndex = 0;
+    private float t = 0f;
+
     private void Start()
     {
+        // Get the points from the current territory
+        territoryPoints = territory.GetPoints().ToArray();
+        // I have an issue with the position of the points
+        // For some reason y is always 1 too high
+        // So I need to decrease it :/
+        for (int i=0; i<territoryPoints.Length; i++)
+        {
+            territoryPoints[i].y -= 1;
+        }
+        // Get the initial position
         startPosition = transform.position;
+
         GameManager.instance.onReset += ResetPosition;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         float[] movements = ProcessInput();
-        Move(movements);
-        //Debug.DrawLine(new Vector3(movements[0], movements[1]), transform.position);
-        //Debug.Break();
+        MoveManually(movements);
+        MoveAlongTerritory();
+
     }
 
     private void OnDestroy()
@@ -52,19 +69,10 @@ public class Player : MonoBehaviour
         {
             movements[0] = 0;
         }
-
-        /*float[] movements = { 0f, 0f };
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            movements[1] = Input.GetAxis("Vertical");
-        } else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            movements[0] = Input.GetAxis("Horizontal");
-        }*/
         return movements;
     }
 
-    private void Move(float[] movements)
+    private void MoveManually(float[] movements)
     {
         Vector2 velo = rb2d.velocity;
         velo.x = moveSpeed * movements[0];
@@ -73,20 +81,37 @@ public class Player : MonoBehaviour
         AdjustSpriteRotation();
     }
 
+    private void MoveAlongTerritory()
+    {
+        if (territoryPoints.Length < 2)
+            return;
+
+        // Points between which we are moving
+        Vector2 startPoint = territoryPoints[currentPointIndex];
+        Vector2 endPoint = territoryPoints[(currentPointIndex + 1) % territoryPoints.Length];
+
+        // Interpolate between points
+        t += moveSpeed * Time.deltaTime / Vector2.Distance(startPoint, endPoint);
+
+        // Calculate the new position
+        Vector2 newPosition = Vector2.Lerp(startPoint, endPoint, t);
+        Vector2 direction = (newPosition - rb2d.position).normalized;
+
+        // Apply velocity to the Rigidbody2D
+        rb2d.velocity = direction * moveSpeed;
+
+        AdjustSpriteRotation();
+
+        // Move to the next segment
+        if (t >= 1f)
+        {
+            t = 0f;
+            currentPointIndex = (currentPointIndex + 1) % territoryPoints.Length;
+        }
+    }
+
     private void AdjustSpriteRotation()
     {
-        //float z = rb2d.velocity.x < 0f ? 270f : 90f;
-        //z = rb2d.velocity.y < 0f ? 0f : 180f;
-        //Vector3 movements = new Vector3(0, 0, z);
-        //transform.Rotate(movements);
-
-        //spriteRenderer.flipX = rb2d.velocity.x < 0f;
-        //spriteRenderer.flipY = rb2d.velocity.y < 0f;
-
-        //transform.LookAt(null, Vector3.left);
-
-        //rb2d.AddTorque(10 * Time.deltaTime);
-
         float rotation = rb2d.velocity.x < 0f ? 90f : rb2d.velocity.x > 0f ? 270f : rb2d.velocity.y < 0f ? 180f : 0f;
         transform.eulerAngles = new Vector3(0, 0, rotation);
     }

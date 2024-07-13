@@ -9,10 +9,16 @@ public class PolygonGenerator : MonoBehaviour
     private Shape shape;
 
     PathSegment[] pathList;
+    List<Vector2> points;
 
     public PathSegment[] GetPaths()
     {
         return pathList;
+    }
+
+    public List<Vector2> GetPoints()
+    {
+        return points;
     }
 
     private void Start()
@@ -26,7 +32,7 @@ public class PolygonGenerator : MonoBehaviour
         shape.settings.outlineColor = Color.white;
 
         // Creation of the points
-        List<Vector2> points = new();
+        points = new();
         points.Add(new Vector2(-2f, 4f));
         points.Add(new Vector2(2f, 4f));
         points.Add(new Vector2(2f, -2f));

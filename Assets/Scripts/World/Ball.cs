@@ -5,8 +5,6 @@ public class Ball : MonoBehaviour
     [Header("Refs")]
     [SerializeField]
     private Rigidbody2D rb2d;
-    //[SerializeField]
-    //private GameObject northWall, southWall, westWall, eastWall;
     [SerializeField]
     private PolygonGenerator territory;
     [SerializeField]
@@ -24,10 +22,9 @@ public class Ball : MonoBehaviour
     private float minStartX;
     private float maxStartX;*/
 
-    private const float ballSize = 0.2f;
+    //private const float ballSize = 0.2f;
     private const string tagPlayer = "Player";
-    private const string tagWall = "Wall";
-    // private List<Vector2> directions = new List<Vector2> { Vector2.left, Vector2.right };
+    private const string tagWallInProgress = "WallInProgress";
 
     private void Start()
     {
@@ -60,38 +57,23 @@ public class Ball : MonoBehaviour
 
         Vector2 dir = Random.value < 0.5f ? Vector2.left : Vector2.right;
         dir.y = Random.value < 0.5f ? -maxInitialAngle : maxInitialAngle;
-        //dir.y = Random.Range(-maxInitialAngle, maxInitialAngle);
         rb2d.velocity = dir * moveSpeed;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        /*
-        Player player = collision.GetComponent<Player>();
-        if (player)
-        {
-            Debug.Log("Game over!");
-            GameManager.instance.IncreaseScore();
-            EmitParticle(8);
-        }
-        */
-
-        if (collision.gameObject.CompareTag(tagPlayer))
-        {
-            EmitParticle(8);
-            GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
-            Debug.Log("Game over!");
-            GameManager.instance.IncreaseScore();
-        }
+        //
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         EmitParticle(8);
-        /*if (collision.gameObject.CompareTag(tagWall))
+        if (collision.gameObject.CompareTag(tagPlayer))
         {
-            EmitParticle(8);
-        }*/
+            GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
+            Debug.Log("Game over!");
+            GameManager.instance.IncreaseScore();
+        }
     }
 
     private void EmitParticle(int amount)
