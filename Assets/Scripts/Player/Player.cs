@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private SpriteRenderer spriteRenderer;
     [SerializeField]
-    private PolygonGenerator territory;
+    private PolygonGenerator polygonGenerator;
 
     [Header("Config")]
     [SerializeField]
@@ -25,7 +25,8 @@ public class Player : MonoBehaviour
     private void Start()
     {
         // Get the points from the current territory
-        territoryPoints = territory.GetPoints().ToArray();
+        territoryPoints = polygonGenerator.GetPoints().ToArray();
+
         // I have an issue with the position of the points
         // For some reason y is always 1 too high
         // So I need to decrease it :/

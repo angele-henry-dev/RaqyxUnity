@@ -51,12 +51,18 @@ public class PolygonGenerator : MonoBehaviour
 
         // Add the points to the collider
         EdgeCollider2D collider = gameObject.AddComponent<EdgeCollider2D>();
-        Vector2[] colliderpoints = new Vector2[5];
-        colliderpoints[0] = new Vector2(-0.5f, 0.5f);
-        colliderpoints[1] = new Vector2(0.5f, 0.5f);
-        colliderpoints[2] = new Vector2(0.5f, -0.5f);
-        colliderpoints[3] = new Vector2(-0.5f, -0.5f);
-        colliderpoints[4] = new Vector2(-0.5f, 0.5f);
+        Vector2[] colliderpoints = new Vector2[points.Count + 1];
+        for (int i = 0; i < points.Count; i++)
+        {
+            colliderpoints[i] = new Vector2(
+                (points[i].x < 0f) ? -0.5f : 0.5f,
+                (points[i].y < 0f) ? -0.5f : 0.5f
+            );
+        }
+        colliderpoints[points.Count] = new Vector2(
+            (points[0].x < 0f) ? -0.5f : 0.5f,
+            (points[0].y < 0f) ? -0.5f : 0.5f
+        ); // Close the loop
         collider.points = colliderpoints;
 
         UpdatePolygon();
@@ -64,6 +70,6 @@ public class PolygonGenerator : MonoBehaviour
 
     private void UpdatePolygon()
     {
-        //
+        // Implement any necessary updates to the polygon here
     }
 }
