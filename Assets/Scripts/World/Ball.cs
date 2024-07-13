@@ -18,36 +18,23 @@ public class Ball : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 1f;
 
-    /*private float minStartY;
-    private float maxStartY;
-    private float minStartX;
-    private float maxStartX;*/
-
-    //private const float ballSize = 0.2f;
     private const string tagPlayer = "Player";
     private const string tagWallInProgress = "WallInProgress";
 
     private void Start()
     {
-        //GameManager.instance.onReset += ResetPosition;
-        //GameManager.instance.gameUI.onStartGame += ResetPosition;
-        EventManager.StartListening("onReset", ResetPosition);
-        EventManager.StartListening("onStartGame", ResetPosition);
+        EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
+        EventManager.StartListening(EventManager.Event.onStartGame, ResetPosition);
     }
 
     private void OnDestroy()
     {
-        //GameManager.instance.onReset -= ResetPosition;
-        //GameManager.instance.gameUI.onStartGame -= ResetPosition;
-        EventManager.StopListening("onReset", ResetPosition);
-        EventManager.StopListening("onStartGame", ResetPosition);
+        EventManager.StopListening(EventManager.Event.onReset, ResetPosition);
+        EventManager.StopListening(EventManager.Event.onStartGame, ResetPosition);
     }
 
     private void ResetPosition(Dictionary<string, object> message)
     {
-        //float posY = Random.Range(minStartY, maxStartY);
-        //float posX = Random.Range(minStartX, maxStartX);
-        //Vector2 position = new(posX, posY);
         Vector2 position = new(0f, 0f);
         transform.position = position;
 

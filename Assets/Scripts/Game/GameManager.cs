@@ -11,8 +11,7 @@ public class GameManager : MonoBehaviour
     public Shake screenShake;
 
     [Header("Config")]
-    public int score;
-    //public System.Action onReset;
+    public int score = 0;
     public int maxScore = 4;
 
     public GameMode gameMode = GameMode.NORMAL;
@@ -37,15 +36,13 @@ public class GameManager : MonoBehaviour
         else
         {
             instance = this;
-            //gameUI.onStartGame += OnStartGame;
-            EventManager.StartListening("onStartGame", OnStartGame);
+            EventManager.StartListening(EventManager.Event.onStartGame, OnStartGame);
         }
     }
 
     private void OnDestroy()
     {
-        //gameUI.onStartGame -= OnStartGame;
-        EventManager.StopListening("onStartGame", OnStartGame);
+        EventManager.StopListening(EventManager.Event.onStartGame, OnStartGame);
     }
 
     private void CheckWin()
@@ -57,8 +54,7 @@ public class GameManager : MonoBehaviour
         } else
         {
             instance.gameAudio.PlayHitPlayerSound();
-            //onReset?.Invoke();
-            EventManager.TriggerEvent("onReset", null);
+            EventManager.TriggerEvent(EventManager.Event.onReset, null);
         }
     }
 

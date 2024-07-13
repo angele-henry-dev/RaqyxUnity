@@ -38,8 +38,7 @@ public class Player : MonoBehaviour
         // Get the initial position
         startPosition = transform.position;
 
-        //GameManager.instance.onReset += ResetPosition;
-        EventManager.StartListening("onReset", ResetPosition);
+        EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
     }
 
     private void FixedUpdate()
@@ -51,8 +50,7 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        //GameManager.instance.onReset -= ResetPosition;
-        EventManager.StopListening("onReset", ResetPosition);
+        EventManager.StopListening(EventManager.Event.onReset, ResetPosition);
     }
 
     private void ResetPosition(Dictionary<string, object> message)
