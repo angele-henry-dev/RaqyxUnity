@@ -45,7 +45,6 @@ public class Player : MonoBehaviour
         float[] movements = ProcessInput();
         MoveManually(movements);
         MoveAlongTerritory();
-
     }
 
     private void OnDestroy()
