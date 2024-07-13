@@ -25,6 +25,7 @@ public class Ball : MonoBehaviour
     {
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
         EventManager.StartListening(EventManager.Event.onStartGame, ResetPosition);
+        ResetPosition();
     }
 
     private void OnDestroy()
@@ -33,7 +34,7 @@ public class Ball : MonoBehaviour
         EventManager.StopListening(EventManager.Event.onStartGame, ResetPosition);
     }
 
-    private void ResetPosition(Dictionary<string, object> message)
+    private void ResetPosition(Dictionary<string, object> message=null)
     {
         Vector2 position = new(0f, 0f);
         transform.position = position;

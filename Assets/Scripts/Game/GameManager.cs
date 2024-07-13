@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnStartGame(Dictionary<string, object> message)
+    private void OnStartGame(Dictionary<string, object> message=null)
     {
         score = 0;
     }

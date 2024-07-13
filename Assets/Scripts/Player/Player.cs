@@ -27,14 +27,11 @@ public class Player : MonoBehaviour
     {
         // Get the points from the current territory
         territoryPoints = polygonGenerator.GetPoints().ToArray();
-
-        // I have an issue with the position of the points
-        // For some reason y is always 1 too high
-        // So I need to decrease it :/
         for (int i=0; i<territoryPoints.Length; i++)
         {
             territoryPoints[i].y -= 1;
         }
+
         // Get the initial position
         startPosition = transform.position;
 
@@ -44,8 +41,13 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         float[] movements = ProcessInput();
-        MoveManually(movements);
-        MoveAlongTerritory();
+        if (movements == null)
+        {
+            MoveAlongTerritory();
+        } else
+        {
+            MoveManually(movements);
+        }
     }
 
     private void OnDestroy()
@@ -62,7 +64,11 @@ public class Player : MonoBehaviour
     {
         float[] movements = { Input.GetAxis(axisHorizontal), Input.GetAxis(axisVertical) };
 
-        if (Mathf.Abs(movements[0]) > Mathf.Abs(movements[1]))
+        if (movements[0] == 0 && movements[1] == 0)
+        {
+            return null;
+        }
+        else if (Mathf.Abs(movements[0]) > Mathf.Abs(movements[1]))
         {
             movements[1] = 0;
         }
