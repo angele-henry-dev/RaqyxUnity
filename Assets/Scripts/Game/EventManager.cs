@@ -14,16 +14,6 @@ public class EventManager : MonoBehaviour
         onReset
     }
 
-    public static string GetEventValue(Event eventValue)
-    {
-        switch (eventValue)
-        {
-            case Event.onStartGame: return "onStartGame";
-            case Event.onReset: return "onReset";
-            default: return "";
-        }
-    }
-
     public static EventManager instance
     {
         get
@@ -57,13 +47,12 @@ public class EventManager : MonoBehaviour
 
     public static void StartListening(Event eventName, Action<Dictionary<string, object>> listener)
     {
-        Action<Dictionary<string, object>> thisEvent;
-
-        if (instance.eventDictionary.TryGetValue(GetEventValue(eventName), out thisEvent))
+        if (instance.eventDictionary.TryGetValue(GetEventValue(eventName), out Action<Dictionary<string, object>> thisEvent))
         {
             thisEvent += listener;
             instance.eventDictionary[GetEventValue(eventName)] = thisEvent;
-        } else
+        }
+        else
         {
             thisEvent += listener;
             instance.eventDictionary.Add(GetEventValue(eventName), thisEvent);
@@ -73,8 +62,7 @@ public class EventManager : MonoBehaviour
     public static void StopListening(Event eventName, Action<Dictionary<string, object>> listener)
     {
         if (eventManager == null) return;
-        Action<Dictionary<string, object>> thisEvent;
-        if (instance.eventDictionary.TryGetValue(GetEventValue(eventName), out thisEvent))
+        if (instance.eventDictionary.TryGetValue(GetEventValue(eventName), out Action<Dictionary<string, object>> thisEvent))
         {
             thisEvent -= listener;
             instance.eventDictionary[GetEventValue(eventName)] = thisEvent;
@@ -83,10 +71,19 @@ public class EventManager : MonoBehaviour
 
     public static void TriggerEvent(Event eventName, Dictionary<string, object> message)
     {
-        Action<Dictionary<string, object>> thisEvent = null;
-        if (instance.eventDictionary.TryGetValue(GetEventValue(eventName), out thisEvent))
+        if (instance.eventDictionary.TryGetValue(GetEventValue(eventName), out Action<Dictionary<string, object>> thisEvent))
         {
             thisEvent.Invoke(message);
         }
+    }
+
+    private static string GetEventValue(Event eventValue)
+    {
+        return eventValue switch
+        {
+            Event.onStartGame => "onStartGame",
+            Event.onReset => "onReset",
+            _ => "",
+        };
     }
 }

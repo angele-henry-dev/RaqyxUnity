@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Config")]
     public int score = 0;
-    public int maxScore = 4;
+    public int maxScore = 1;
 
     public GameMode gameMode = GameMode.NORMAL;
 
@@ -24,8 +24,6 @@ public class GameManager : MonoBehaviour
     public void IncreaseScore()
     {
         score++;
-        gameUI.UpdateScore(score);
-        gameUI.HighlightScore();
         CheckWin();
     }
 
@@ -61,6 +59,5 @@ public class GameManager : MonoBehaviour
     private void OnStartGame(Dictionary<string, object> message)
     {
         score = 0;
-        gameUI.UpdateScore(score);
     }
 }

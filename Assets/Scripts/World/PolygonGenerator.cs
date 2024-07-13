@@ -21,7 +21,7 @@ public class PolygonGenerator : MonoBehaviour
         return points;
     }
 
-    private void Start()
+    private void Awake()
     {
         GeneratePolygon();
     }

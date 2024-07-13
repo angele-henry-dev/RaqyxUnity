@@ -9,8 +9,6 @@ public class GameUI : MonoBehaviour
     [SerializeField]
     private GameObject quitButton;
     [SerializeField]
-    private ScoreText scoreText;
-    [SerializeField]
     private TMPro.TextMeshProUGUI winText;
     [SerializeField]
     private TMPro.TextMeshProUGUI volumeValueText;
@@ -25,16 +23,6 @@ public class GameUI : MonoBehaviour
 #if UNITY_EDITOR
         quitButton.SetActive(false);
 #endif
-    }
-
-    public void UpdateScore(int score)
-    {
-        scoreText.SetScore(score);
-    }
-
-    public void HighlightScore()
-    {
-        scoreText.Highlight();
     }
 
     public void OnStartGameButtonClicked()

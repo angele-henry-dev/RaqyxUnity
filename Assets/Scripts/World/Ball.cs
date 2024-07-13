@@ -45,10 +45,13 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag(tagPlayer))
+        if (collision.gameObject.CompareTag(tagPlayer) || collision.gameObject.CompareTag(tagWallInProgress))
         {
+            // UI effect
             EmitParticle(8);
             GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
+
+            // Game effect
             Debug.Log("Game over!");
             GameManager.instance.IncreaseScore();
         }

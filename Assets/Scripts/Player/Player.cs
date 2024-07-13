@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
     {
         float[] movements = ProcessInput();
         MoveManually(movements);
-        //MoveAlongTerritory(territoryPoints);
+        MoveAlongTerritory();
     }
 
     private void OnDestroy()
@@ -82,14 +82,14 @@ public class Player : MonoBehaviour
         AdjustSpriteRotation();
     }
 
-    private void MoveAlongTerritory(Vector2[] points)
+    private void MoveAlongTerritory()
     {
-        if (points.Length < 2)
+        if (territoryPoints.Length < 2)
             return;
 
         // Points between which we are moving
-        Vector2 startPoint = points[currentPointIndex];
-        Vector2 endPoint = points[(currentPointIndex + 1) % points.Length];
+        Vector2 startPoint = territoryPoints[currentPointIndex];
+        Vector2 endPoint = territoryPoints[(currentPointIndex + 1) % territoryPoints.Length];
 
         // Interpolate between points
         t += moveSpeed * Time.deltaTime / Vector2.Distance(startPoint, endPoint);
@@ -107,7 +107,7 @@ public class Player : MonoBehaviour
         if (t >= 1f)
         {
             t = 0f;
-            currentPointIndex = (currentPointIndex + 1) % points.Length;
+            currentPointIndex = (currentPointIndex + 1) % territoryPoints.Length;
         }
     }
 
