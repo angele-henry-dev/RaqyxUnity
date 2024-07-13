@@ -2,7 +2,7 @@ using UnityEngine;
 using Shapes2D;
 using System.Collections.Generic;
 
-public class TerritoryGenerator : MonoBehaviour
+public class PolygonGenerator : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField]
@@ -15,8 +15,8 @@ public class TerritoryGenerator : MonoBehaviour
 
     private void GeneratePolygon()
     {
-        //shape.settings.fillColor = Color.clear;
-        //shape.settings.outlineColor = Color.white;
+        shape.settings.fillColor = Color.clear;
+        shape.settings.outlineColor = Color.white;
 
         // Creation of the points
         List<Vector2> points = new();
@@ -34,6 +34,7 @@ public class TerritoryGenerator : MonoBehaviour
 
         // Apply new segments to the shape
         shape.settings.pathSegments = pathList;
+        shape.settings.polyVertices = points.ToArray();
 
         // Add the points to the collider
         EdgeCollider2D collider = gameObject.AddComponent<EdgeCollider2D>();
