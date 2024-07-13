@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static PolygonGenerator;
 
 public class Player : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class Player : MonoBehaviour
     private const string axisVertical = "Vertical";
 
     private Vector2[] territoryPoints;
+    private Path[] territoryPaths;
     private int currentPointIndex = 0;
     private float t = 0f;
 
@@ -31,6 +33,13 @@ public class Player : MonoBehaviour
         {
             territoryPoints[i].y -= 1;
         }
+        territoryPaths = polygonGenerator.GetPaths();
+        /*for (int i = 0; i < territoryPaths.Length; i++)
+        {
+            Debug.Log("territoryPaths " + i);
+            Debug.Log($"P0: {territoryPaths[i].p0.x}:{territoryPaths[i].p0.y}");
+            Debug.Log($"P1: {territoryPaths[i].p1.x}:{territoryPaths[i].p1.y}");
+        }*/
 
         // Get the initial position
         startPosition = transform.position;
@@ -43,7 +52,7 @@ public class Player : MonoBehaviour
         float[] movements = ProcessInput();
         if (movements == null)
         {
-            MoveAlongTerritory();
+            MoveAlongTerritoryPoints();
         } else
         {
             MoveManually(movements);
@@ -88,7 +97,13 @@ public class Player : MonoBehaviour
         AdjustSpriteRotation();
     }
 
-    private void MoveAlongTerritory()
+    private void MoveAlongTerritoryPaths()
+    {
+        if (territoryPaths.Length < 4)
+            return;
+    }
+
+    private void MoveAlongTerritoryPoints()
     {
         if (territoryPoints.Length < 2)
             return;

@@ -8,10 +8,23 @@ public class PolygonGenerator : MonoBehaviour
     [SerializeField]
     private Shape shape;
 
-    PathSegment[] pathList;
+    Path[] pathList;
     List<Vector2> points;
 
-    public PathSegment[] GetPaths()
+    public struct Path
+    {
+        public Vector2 p0, p1;
+
+        public Path(Vector2 p0, Vector2 p1)
+        {
+            this.p0 = p0;
+            this.p1 = p1;
+        }
+
+        public Vector2 Midpoint { get { return p0 + (p1 - p0) / 2; } }
+    }
+
+    public Path[] GetPaths()
     {
         return pathList;
     }
@@ -39,14 +52,13 @@ public class PolygonGenerator : MonoBehaviour
         points.Add(new Vector2(-2f, -2f));
 
         // Creation of the segments
-        pathList = new PathSegment[4];
-        pathList[0] = new(points[0], points[1]);
-        pathList[1] = new(points[1], points[2]);
-        pathList[2] = new(points[2], points[3]);
-        pathList[3] = new(points[3], points[0]);
+        pathList = new Path[4];
+        pathList[0] = new Path(points[0], points[1]);
+        pathList[1] = new Path(points[1], points[2]);
+        pathList[2] = new Path(points[2], points[3]);
+        pathList[3] = new Path(points[3], points[0]);
 
-        // Apply new segments to the shape
-        shape.settings.pathSegments = pathList;
+        // Apply new points to the shape
         shape.settings.polyVertices = points.ToArray();
 
         // Add the points to the collider
