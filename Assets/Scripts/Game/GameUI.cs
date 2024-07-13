@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameUI : MonoBehaviour
@@ -14,7 +15,7 @@ public class GameUI : MonoBehaviour
     [SerializeField]
     private TMPro.TextMeshProUGUI volumeValueText;
 
-    public System.Action onStartGame;
+    //public System.Action onStartGame;
 
     private void Start()
     {
@@ -41,7 +42,8 @@ public class GameUI : MonoBehaviour
     public void OnStartGameButtonClicked()
     {
         menuObject.SetActive(false);
-        onStartGame?.Invoke();
+        //onStartGame?.Invoke();
+        EventManager.TriggerEvent("onStartGame", null);
     }
 
     public void OnQuitButtonClicked()

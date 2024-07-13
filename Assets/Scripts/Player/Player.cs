@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -33,27 +34,28 @@ public class Player : MonoBehaviour
         for (int i=0; i<territoryPoints.Length; i++)
         {
             territoryPoints[i].y -= 1;
-            //Debug.Log($"{territoryPoints[i].x}:{territoryPoints[i].y}");
         }
         // Get the initial position
         startPosition = transform.position;
 
-        GameManager.instance.onReset += ResetPosition;
+        //GameManager.instance.onReset += ResetPosition;
+        EventManager.StartListening("onReset", ResetPosition);
     }
 
     private void FixedUpdate()
     {
         float[] movements = ProcessInput();
         MoveManually(movements);
-        MoveAlongTerritory(territoryPoints);
+        //MoveAlongTerritory(territoryPoints);
     }
 
     private void OnDestroy()
     {
-        GameManager.instance.onReset -= ResetPosition;
+        //GameManager.instance.onReset -= ResetPosition;
+        EventManager.StopListening("onReset", ResetPosition);
     }
 
-    private void ResetPosition()
+    private void ResetPosition(Dictionary<string, object> message)
     {
         transform.position = startPosition;
     }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -11,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Config")]
     public int score;
-    public System.Action onReset;
+    //public System.Action onReset;
     public int maxScore = 4;
 
     public GameMode gameMode = GameMode.NORMAL;
@@ -36,13 +37,15 @@ public class GameManager : MonoBehaviour
         else
         {
             instance = this;
-            gameUI.onStartGame += OnStartGame;
+            //gameUI.onStartGame += OnStartGame;
+            EventManager.StartListening("onStartGame", OnStartGame);
         }
     }
 
     private void OnDestroy()
     {
-        gameUI.onStartGame -= OnStartGame;
+        //gameUI.onStartGame -= OnStartGame;
+        EventManager.StopListening("onStartGame", OnStartGame);
     }
 
     private void CheckWin()
@@ -54,11 +57,12 @@ public class GameManager : MonoBehaviour
         } else
         {
             instance.gameAudio.PlayHitPlayerSound();
-            onReset?.Invoke();
+            //onReset?.Invoke();
+            EventManager.TriggerEvent("onReset", null);
         }
     }
 
-    private void OnStartGame()
+    private void OnStartGame(Dictionary<string, object> message)
     {
         score = 0;
         gameUI.UpdateScore(score);

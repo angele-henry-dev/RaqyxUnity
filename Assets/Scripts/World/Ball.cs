@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
@@ -28,26 +29,21 @@ public class Ball : MonoBehaviour
 
     private void Start()
     {
-        GameManager.instance.onReset += ResetPosition;
-        GameManager.instance.gameUI.onStartGame += InitialPush;
+        //GameManager.instance.onReset += ResetPosition;
+        //GameManager.instance.gameUI.onStartGame += ResetPosition;
+        EventManager.StartListening("onReset", ResetPosition);
+        EventManager.StartListening("onStartGame", ResetPosition);
     }
 
     private void OnDestroy()
     {
-        GameManager.instance.onReset -= ResetPosition;
-        GameManager.instance.gameUI.onStartGame -= InitialPush;
+        //GameManager.instance.onReset -= ResetPosition;
+        //GameManager.instance.gameUI.onStartGame -= ResetPosition;
+        EventManager.StopListening("onReset", ResetPosition);
+        EventManager.StopListening("onStartGame", ResetPosition);
     }
 
-    private void InitialPush()
-    {
-        /*minStartY = southWall.transform.position.y + ballSize + 0.1f;
-        maxStartY = northWall.transform.position.y - ballSize - 0.1f;
-        minStartX = westWall.transform.position.x + ballSize + 0.1f;
-        maxStartX = eastWall.transform.position.x - ballSize - 0.1f;*/
-        ResetPosition();
-    }
-
-    private void ResetPosition()
+    private void ResetPosition(Dictionary<string, object> message)
     {
         //float posY = Random.Range(minStartY, maxStartY);
         //float posX = Random.Range(minStartX, maxStartX);
@@ -62,18 +58,18 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //
+        if (collision.gameObject.CompareTag(tagPlayer))
+        {
+            EmitParticle(8);
+            GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
+            Debug.Log("Game over!");
+            GameManager.instance.IncreaseScore();
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         EmitParticle(8);
-        if (collision.gameObject.CompareTag(tagPlayer))
-        {
-            GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
-            Debug.Log("Game over!");
-            GameManager.instance.IncreaseScore();
-        }
     }
 
     private void EmitParticle(int amount)
