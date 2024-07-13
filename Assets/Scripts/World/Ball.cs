@@ -5,8 +5,10 @@ public class Ball : MonoBehaviour
     [Header("Refs")]
     [SerializeField]
     private Rigidbody2D rb2d;
+    //[SerializeField]
+    //private GameObject northWall, southWall, westWall, eastWall;
     [SerializeField]
-    private GameObject northWall, southWall, westWall, eastWall;
+    private PolygonGenerator territory;
     [SerializeField]
     private ParticleSystem collisionParticle;
 
@@ -17,10 +19,10 @@ public class Ball : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 1f;
 
-    private float minStartY;
+    /*private float minStartY;
     private float maxStartY;
     private float minStartX;
-    private float maxStartX;
+    private float maxStartX;*/
 
     private const float ballSize = 0.2f;
     private const string tagPlayer = "Player";
@@ -41,18 +43,19 @@ public class Ball : MonoBehaviour
 
     private void InitialPush()
     {
-        minStartY = southWall.transform.position.y + ballSize + 0.1f;
+        /*minStartY = southWall.transform.position.y + ballSize + 0.1f;
         maxStartY = northWall.transform.position.y - ballSize - 0.1f;
         minStartX = westWall.transform.position.x + ballSize + 0.1f;
-        maxStartX = eastWall.transform.position.x - ballSize - 0.1f;
+        maxStartX = eastWall.transform.position.x - ballSize - 0.1f;*/
         ResetPosition();
     }
 
     private void ResetPosition()
     {
-        float posY = Random.Range(minStartY, maxStartY);
-        float posX = Random.Range(minStartX, maxStartX);
-        Vector2 position = new(posX, posY);
+        //float posY = Random.Range(minStartY, maxStartY);
+        //float posX = Random.Range(minStartX, maxStartX);
+        //Vector2 position = new(posX, posY);
+        Vector2 position = new(0f, 0f);
         transform.position = position;
 
         Vector2 dir = Random.value < 0.5f ? Vector2.left : Vector2.right;

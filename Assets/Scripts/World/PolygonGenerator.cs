@@ -8,6 +8,13 @@ public class PolygonGenerator : MonoBehaviour
     [SerializeField]
     private Shape shape;
 
+    PathSegment[] pathList;
+
+    public PathSegment[] GetPaths()
+    {
+        return pathList;
+    }
+
     private void Start()
     {
         GeneratePolygon();
@@ -26,7 +33,7 @@ public class PolygonGenerator : MonoBehaviour
         points.Add(new Vector2(-2f, -2f));
 
         // Creation of the segments
-        PathSegment[] pathList = new PathSegment[4];
+        pathList = new PathSegment[4];
         pathList[0] = new(points[0], points[1]);
         pathList[1] = new(points[1], points[2]);
         pathList[2] = new(points[2], points[3]);
