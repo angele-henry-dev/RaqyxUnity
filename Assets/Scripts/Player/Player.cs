@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     private Direction direction = Direction.RIGHT;
 
     private Vector2[] territoryPoints;
-    private int currentPointIndex = 0;
+    private int currentPointIndex = 1;
     private float playerDecay;
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
     {
         Vector2 size = spriteRenderer.transform.localScale;
         playerDecay = 0.1f;
-        startPosition = new(x: -2.5f, y: (3f + playerDecay));
+        startPosition = new(x: 0f, y: (3f + playerDecay));
 
         territoryPoints = GetPolygonPoints();
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
@@ -86,27 +86,13 @@ public class Player : MonoBehaviour
 
     private void MoveAuto()
     {
-        /*Vector2 direction = transform.up;
-        rb2d.velocity = direction * moveSpeed;*/
-
-        if (territoryPoints.Length < 2)
-            return;
-
-        Vector2 newDirection;
+        Vector2 newDirection = transform.up;
+        rb2d.velocity = newDirection * moveSpeed;
 
         if (TriggerPolygonPoint())
         {
-            currentPointIndex = (currentPointIndex + 1) % territoryPoints.Length;
-            Vector2 targetPoint = territoryPoints[currentPointIndex];
-            newDirection = (targetPoint - rb2d.position).normalized;
-        } else
-        {
-            newDirection = (territoryPoints[currentPointIndex] - rb2d.position).normalized;
+            ChangeDirection(GetNextMove());
         }
-
-        rb2d.velocity = newDirection * moveSpeed;
-
-        AdjustSpriteRotation();
     }
 
     private void MoveManually(float[] movements)
@@ -140,7 +126,7 @@ public class Player : MonoBehaviour
 
     private void AdjustSpriteRotation()
     {
-        /*float rotation = 0f;
+        float rotation = 0f;
         direction = Direction.UP;
 
         if (rb2d.velocity.x < 0f)
@@ -157,10 +143,10 @@ public class Player : MonoBehaviour
             rotation = 180f;
             direction = Direction.DOWN;
         }
-        transform.eulerAngles = new Vector3(0, 0, rotation);*/
+        transform.eulerAngles = new Vector3(0, 0, rotation);
 
-        float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg;
-        rb2d.rotation = angle - 90f;
+        /*float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg;
+        rb2d.rotation = angle - 90f;*/
     }
 
     private void ResetPosition(Dictionary<string, object> message = null)
@@ -246,6 +232,7 @@ public class Player : MonoBehaviour
 
         if (distanceToPoint < pointThreshold)
         {
+            currentPointIndex = (currentPointIndex + 1) % territoryPoints.Length;
             return true;
         }
         return false;
