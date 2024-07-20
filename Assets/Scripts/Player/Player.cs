@@ -63,11 +63,6 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         MoveAuto();
-        /*if (TriggerPolygonPoint())
-        {
-            // ChangeDirection(GetNextMove());
-            BackOnPolygon();
-        }*/
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -97,21 +92,20 @@ public class Player : MonoBehaviour
         if (territoryPoints.Length < 2)
             return;
 
-        Vector2 targetPoint = territoryPoints[currentPointIndex];
-        Vector2 newDirection = (targetPoint - rb2d.position).normalized;
-        float distanceToPoint = Vector2.Distance(rb2d.position, targetPoint);
+        Vector2 newDirection;
 
-        if (distanceToPoint < pointThreshold)
+        if (TriggerPolygonPoint())
         {
             currentPointIndex = (currentPointIndex + 1) % territoryPoints.Length;
-            targetPoint = territoryPoints[currentPointIndex];
+            Vector2 targetPoint = territoryPoints[currentPointIndex];
             newDirection = (targetPoint - rb2d.position).normalized;
+        } else
+        {
+            newDirection = (territoryPoints[currentPointIndex] - rb2d.position).normalized;
         }
 
         rb2d.velocity = newDirection * moveSpeed;
 
-        /*float angle = Mathf.Atan2(newDirection.y, newDirection.x) * Mathf.Rad2Deg;
-        rb2d.rotation = angle - 90f;*/
         AdjustSpriteRotation();
     }
 
@@ -246,14 +240,13 @@ public class Player : MonoBehaviour
 
     private bool TriggerPolygonPoint()
     {
-        for (int i=0; i< territoryPoints.Length; i++)
+        Vector2 startingFrom = rb2d.position;
+        Vector2 targetPoint = territoryPoints[currentPointIndex];
+        float distanceToPoint = Vector2.Distance(startingFrom, targetPoint);
+
+        if (distanceToPoint < pointThreshold)
         {
-            float distanceToPoint = Vector2.Distance(rb2d.position, territoryPoints[i]);
-            if (distanceToPoint < pointThreshold)
-            {
-                Debug.Log("Occured!");
-                return true;
-            }
+            return true;
         }
         return false;
     }
