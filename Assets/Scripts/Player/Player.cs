@@ -17,9 +17,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Vector3 startPosition = new(x:-2f, y:3f, z:0f);
 
+    [SerializeField]
+    private bool isTerritoryInProgress = false;
+
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
-    private const string tagWall = "Wall";
+    // private const string tagWall = "Wall";
 
     void Start()
     {
@@ -76,6 +79,7 @@ public class Player : MonoBehaviour
         velo.y = moveSpeed * movements[1];
         rb2d.velocity = velo;
         AdjustSpriteRotation();
+        isTerritoryInProgress = true;
     }
 
     private void MoveAuto()
@@ -92,9 +96,17 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag(tagWall))
+        PolygonGenerator polygon = collision.GetComponent<PolygonGenerator>();
+        if (isTerritoryInProgress && polygon)
         {
-            Debug.Log("Collision with wall");
+            BackOnPolygon(polygon);
         }
+    }
+
+    private void BackOnPolygon(PolygonGenerator polygon)
+    {
+        Vector3 currentPosition = transform.position;
+        Debug.Log("Collide wall");
+        isTerritoryInProgress = false;
     }
 }
