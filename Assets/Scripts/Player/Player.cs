@@ -20,9 +20,20 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool isTerritoryInProgress = false;
 
+    [SerializeField]
+    private Direction direction = Direction.RIGHT;
+
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
     // private const string tagWall = "Wall";
+
+    enum Direction
+    {
+        UP,
+        DOWN,
+        RIGHT,
+        LEFT
+    }
 
     void Start()
     {
@@ -80,9 +91,24 @@ public class Player : MonoBehaviour
         AdjustSpriteRotation();
     }
 
-    private float[] GetNextMove(Vector3 fromPosition)
+    private float[] GetNextMove()
     {
-        float[] movements = { 0f, -1f };
+        float[] movements;
+        switch (direction)
+        {
+            case Direction.RIGHT:
+                movements = new[] { 0f, -1f };
+                break;
+            case Direction.LEFT:
+                movements = new[] { 0f, 1f };
+                break;
+            case Direction.DOWN:
+                movements = new[] { -1f, 0f };
+                break;
+            default:
+                movements = new[] { 1f, 0f };
+                break;
+        }
         return movements;
     }
 
@@ -90,7 +116,23 @@ public class Player : MonoBehaviour
 
     private void AdjustSpriteRotation()
     {
-        float rotation = rb2d.velocity.x < 0f ? 90f : rb2d.velocity.x > 0f ? 270f : rb2d.velocity.y < 0f ? 180f : 0f;
+        float rotation = 0f;
+        direction = Direction.UP;
+
+        if (rb2d.velocity.x < 0f)
+        {
+            rotation = 90f;
+            direction = Direction.LEFT;
+        } else if (rb2d.velocity.x > 0f)
+        {
+            rotation = 270f;
+            direction = Direction.RIGHT;
+        }
+        else if (rb2d.velocity.y < 0f)
+        {
+            rotation = 180f;
+            direction = Direction.DOWN;
+        }
         transform.eulerAngles = new Vector3(0, 0, rotation);
     }
 
@@ -122,8 +164,8 @@ public class Player : MonoBehaviour
 
     private void BackOnPolygon(PolygonGenerator polygon)
     {
-        Vector3 currentPosition = transform.position;
+        // Vector3 currentPosition = transform.position;
         isTerritoryInProgress = false;
-        ChangeDirection(GetNextMove(currentPosition));
+        ChangeDirection(GetNextMove());
     }
 }
