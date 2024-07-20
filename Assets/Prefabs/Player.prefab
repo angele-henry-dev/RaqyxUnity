@@ -51,6 +51,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 2572991642246350410}
   polygonGenerator: {fileID: 0}
   moveSpeed: 1.5
+  startPosition: {x: -2, y: 3, z: 0}
 --- !u!50 &4390568821096359437
 Rigidbody2D:
   serializedVersion: 4

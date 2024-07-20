@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static PolygonGenerator;
 
 public class Player : MonoBehaviour
 {
@@ -14,49 +13,31 @@ public class Player : MonoBehaviour
 
     [Header("Config")]
     [SerializeField]
-    private float moveSpeed = 1f;
+    private float moveSpeed = 1.5f;
+    [SerializeField]
+    private Vector3 startPosition = new(x:-2f, y:3f, z:0f);
 
-    private Vector3 startPosition;
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
+    private const string tagWall = "Wall";
 
-    private Vector2[] territoryPoints;
-    private Path[] territoryPaths;
-    private int currentPointIndex = 0;
-    private float t = 0f;
-
-    private void Start()
+    void Start()
     {
-        // Get the points from the current territory
-        territoryPoints = polygonGenerator.GetPoints().ToArray();
-        for (int i=0; i<territoryPoints.Length; i++)
-        {
-            territoryPoints[i].y -= 1;
-        }
-        territoryPaths = polygonGenerator.GetPaths();
-        /*for (int i = 0; i < territoryPaths.Length; i++)
-        {
-            Debug.Log("territoryPaths " + i);
-            Debug.Log($"P0: {territoryPaths[i].p0.x}:{territoryPaths[i].p0.y}");
-            Debug.Log($"P1: {territoryPaths[i].p1.x}:{territoryPaths[i].p1.y}");
-        }*/
-
-        // Get the initial position
-        startPosition = transform.position;
-
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
     }
 
-    private void FixedUpdate()
+    void Update()
     {
         float[] movements = ProcessInput();
-        if (movements == null)
-        {
-            MoveAlongTerritoryPoints();
-        } else
+        if (movements != null)
         {
             MoveManually(movements);
         }
+    }
+
+    void FixedUpdate()
+    {
+        MoveAuto();
     }
 
     private void OnDestroy()
@@ -97,44 +78,23 @@ public class Player : MonoBehaviour
         AdjustSpriteRotation();
     }
 
-    private void MoveAlongTerritoryPaths()
+    private void MoveAuto()
     {
-        if (territoryPaths.Length < 4)
-            return;
-    }
-
-    private void MoveAlongTerritoryPoints()
-    {
-        if (territoryPoints.Length < 2)
-            return;
-
-        // Points between which we are moving
-        Vector2 startPoint = territoryPoints[currentPointIndex];
-        Vector2 endPoint = territoryPoints[(currentPointIndex + 1) % territoryPoints.Length];
-
-        // Interpolate between points
-        t += moveSpeed * Time.deltaTime / Vector2.Distance(startPoint, endPoint);
-
-        // Calculate the new position
-        Vector2 newPosition = Vector2.Lerp(startPoint, endPoint, t);
-        Vector2 direction = (newPosition - rb2d.position).normalized;
-
-        // Apply velocity to the Rigidbody2D
+        Vector2 direction = transform.up;
         rb2d.velocity = direction * moveSpeed;
-
-        AdjustSpriteRotation();
-
-        // Move to the next segment
-        if (t >= 1f)
-        {
-            t = 0f;
-            currentPointIndex = (currentPointIndex + 1) % territoryPoints.Length;
-        }
     }
 
     private void AdjustSpriteRotation()
     {
         float rotation = rb2d.velocity.x < 0f ? 90f : rb2d.velocity.x > 0f ? 270f : rb2d.velocity.y < 0f ? 180f : 0f;
         transform.eulerAngles = new Vector3(0, 0, rotation);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag(tagWall))
+        {
+            Debug.Log("Collision with wall");
+        }
     }
 }

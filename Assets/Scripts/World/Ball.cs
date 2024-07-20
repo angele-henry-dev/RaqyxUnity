@@ -7,8 +7,6 @@ public class Ball : MonoBehaviour
     [SerializeField]
     private Rigidbody2D rb2d;
     [SerializeField]
-    private PolygonGenerator territory;
-    [SerializeField]
     private ParticleSystem collisionParticle;
 
     [Header("Config")]

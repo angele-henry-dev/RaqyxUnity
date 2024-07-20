@@ -1762,7 +1762,7 @@ MonoBehaviour:
   asSounds: {fileID: 1597005003}
   hitPlayerSound: {fileID: 8300000, guid: 3e7fe50647d1e43b2a5115db3e597e00, type: 3}
   winLevelSound: {fileID: 8300000, guid: 68b760af65ffd4573bf7af333b6039ce, type: 3}
---- !u!21 &1055492500
+--- !u!21 &897226432
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -7876,7 +7876,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1055492500}
+  - {fileID: 897226432}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
