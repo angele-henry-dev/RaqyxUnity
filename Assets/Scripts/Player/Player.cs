@@ -43,15 +43,63 @@ public class Player : MonoBehaviour
         MoveAuto();
     }
 
-    private void OnDestroy()
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        PolygonGenerator polygon = collision.GetComponent<PolygonGenerator>();
+        if (isTerritoryInProgress && polygon)
+        {
+            BackOnPolygon(polygon);
+        }
+    }
+
+    void OnDestroy()
     {
         EventManager.StopListening(EventManager.Event.onReset, ResetPosition);
+    }
+
+    // Movements
+
+    private void MoveAuto()
+    {
+        Vector2 direction = transform.up;
+        rb2d.velocity = direction * moveSpeed;
+    }
+
+    private void MoveManually(float[] movements)
+    {
+        ChangeDirection(movements);
+        isTerritoryInProgress = true;
+    }
+
+    private void ChangeDirection(float[] movements)
+    {
+        Vector2 velo = rb2d.velocity;
+        velo.x = moveSpeed * movements[0];
+        velo.y = moveSpeed * movements[1];
+        rb2d.velocity = velo;
+        AdjustSpriteRotation();
+    }
+
+    private float[] GetNextMove(Vector3 fromPosition)
+    {
+        float[] movements = { 0f, -1f };
+        return movements;
+    }
+
+    // UI
+
+    private void AdjustSpriteRotation()
+    {
+        float rotation = rb2d.velocity.x < 0f ? 90f : rb2d.velocity.x > 0f ? 270f : rb2d.velocity.y < 0f ? 180f : 0f;
+        transform.eulerAngles = new Vector3(0, 0, rotation);
     }
 
     private void ResetPosition(Dictionary<string, object> message)
     {
         transform.position = startPosition;
     }
+
+    // Trigger
 
     private float[] ProcessInput()
     {
@@ -72,41 +120,10 @@ public class Player : MonoBehaviour
         return movements;
     }
 
-    private void MoveManually(float[] movements)
-    {
-        Vector2 velo = rb2d.velocity;
-        velo.x = moveSpeed * movements[0];
-        velo.y = moveSpeed * movements[1];
-        rb2d.velocity = velo;
-        AdjustSpriteRotation();
-        isTerritoryInProgress = true;
-    }
-
-    private void MoveAuto()
-    {
-        Vector2 direction = transform.up;
-        rb2d.velocity = direction * moveSpeed;
-    }
-
-    private void AdjustSpriteRotation()
-    {
-        float rotation = rb2d.velocity.x < 0f ? 90f : rb2d.velocity.x > 0f ? 270f : rb2d.velocity.y < 0f ? 180f : 0f;
-        transform.eulerAngles = new Vector3(0, 0, rotation);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        PolygonGenerator polygon = collision.GetComponent<PolygonGenerator>();
-        if (isTerritoryInProgress && polygon)
-        {
-            BackOnPolygon(polygon);
-        }
-    }
-
     private void BackOnPolygon(PolygonGenerator polygon)
     {
         Vector3 currentPosition = transform.position;
-        Debug.Log("Collide wall");
         isTerritoryInProgress = false;
+        ChangeDirection(GetNextMove(currentPosition));
     }
 }
