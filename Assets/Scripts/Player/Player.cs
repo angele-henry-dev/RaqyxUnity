@@ -24,12 +24,11 @@ public class Player : MonoBehaviour
     private Direction direction = Direction.RIGHT;
 
     private Vector2[] territoryPoints;
-    private int currentPointIndex = 1;
     private float playerDecay;
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
 
-    private float pointThreshold = 0.1f; // Distance ? laquelle le personnage doit ?tre consid?r? comme ayant atteint un point
+    private readonly float pointThreshold = 0.1f; // Distance ? laquelle le personnage doit ?tre consid?r? comme ayant atteint un point
 
     enum Direction
     {
@@ -42,8 +41,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         Vector2 size = spriteRenderer.transform.localScale;
-        playerDecay = 0.1f;
-        startPosition = new(x: 0f, y: (3f + playerDecay));
+        playerDecay = size.x - 0.1f;
+        startPosition = new(x: -1.5f, y: (3f));
 
         territoryPoints = GetPolygonPoints();
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
@@ -86,13 +85,14 @@ public class Player : MonoBehaviour
 
     private void MoveAuto()
     {
-        Vector2 newDirection = transform.up;
-        rb2d.velocity = newDirection * moveSpeed;
-
         if (TriggerPolygonPoint())
         {
+            Debug.Log($"Current direction: {direction}");
             ChangeDirection(GetNextMove());
+            Debug.Log($"New direction: {direction}");
         }
+        Vector2 newDirection = transform.up;
+        rb2d.velocity = newDirection * moveSpeed;
     }
 
     private void MoveManually(float[] movements)
@@ -181,9 +181,8 @@ public class Player : MonoBehaviour
         {
             points[i].y -= 1;
 
-            points[i].y = points[i].y > 0 ? (points[i].y + playerDecay) : (points[i].y - playerDecay);
-            points[i].x = points[i].x > 0 ? (points[i].x + playerDecay) : (points[i].x - playerDecay);
-            Debug.Log($"Point {i}: {points[i].x}/{points[i].y}");
+            points[i].y = points[i].y > 0 ? (points[i].y) : (points[i].y);
+            points[i].x = points[i].x > 0 ? (points[i].x) : (points[i].x);
         }
         return points;
     }
@@ -215,10 +214,10 @@ public class Player : MonoBehaviour
 
         transform.position = direction switch
         {
-            Direction.RIGHT => new(x: (transform.position.x + playerDecay), y: transform.position.y, z: transform.position.z),
-            Direction.LEFT => new(x: (transform.position.x - playerDecay), y: transform.position.y, z: transform.position.z),
-            Direction.DOWN => new(x: transform.position.x, y: (transform.position.y - playerDecay), z: transform.position.z),
-            _ => new(x: transform.position.x, y: (transform.position.y + playerDecay), z: transform.position.z),
+            Direction.RIGHT => new(x: (transform.position.x), y: transform.position.y, z: transform.position.z),
+            Direction.LEFT => new(x: (transform.position.x), y: transform.position.y, z: transform.position.z),
+            Direction.DOWN => new(x: transform.position.x, y: (transform.position.y), z: transform.position.z),
+            _ => new(x: transform.position.x, y: (transform.position.y), z: transform.position.z),
         };
 
         ChangeDirection(GetNextMove());
@@ -226,15 +225,52 @@ public class Player : MonoBehaviour
 
     private bool TriggerPolygonPoint()
     {
-        Vector2 startingFrom = rb2d.position;
-        Vector2 targetPoint = territoryPoints[currentPointIndex];
+        Vector2 startingFrom = transform.position;
+        Vector2 targetPoint = GetNextPointIndex();
         float distanceToPoint = Vector2.Distance(startingFrom, targetPoint);
 
         if (distanceToPoint < pointThreshold)
         {
-            currentPointIndex = (currentPointIndex + 1) % territoryPoints.Length;
+            Debug.Log($"Distance {distanceToPoint} from {startingFrom.x}:{startingFrom.y} to {targetPoint.x}:{targetPoint.y}");
             return true;
         }
         return false;
+    }
+
+    private Vector2 GetNextPointIndex()
+    {
+        Vector2 currentPosition = transform.position;
+
+        for (int i = 0; i < territoryPoints.Length; i++)
+        {
+            switch (direction)
+            {
+                case Direction.UP:
+                    if (territoryPoints[i].x == currentPosition.x && territoryPoints[i].y > currentPosition.y)
+                    {
+                        return territoryPoints[i];
+                    }
+                    break;
+                case Direction.DOWN:
+                    if (territoryPoints[i].x == currentPosition.x && territoryPoints[i].y < currentPosition.y)
+                    {
+                        return territoryPoints[i];
+                    }
+                    break;
+                case Direction.LEFT:
+                    if (territoryPoints[i].y == currentPosition.y && territoryPoints[i].x < currentPosition.x)
+                    {
+                        return territoryPoints[i];
+                    }
+                    break;
+                case Direction.RIGHT:
+                    if (territoryPoints[i].y == currentPosition.y && territoryPoints[i].x > currentPosition.x)
+                    {
+                        return territoryPoints[i];
+                    }
+                    break;
+            }
+        }
+        return currentPosition;
     }
 }
