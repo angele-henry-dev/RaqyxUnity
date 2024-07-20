@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 1.5f;
     [SerializeField]
-    private Vector3 startPosition = new(x:-2f, y:3f, z:0f);
+    private Vector2 startPosition;
 
     [SerializeField]
     private bool isTerritoryInProgress = false;
@@ -23,9 +23,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Direction direction = Direction.RIGHT;
 
+    private Vector2[] territoryPoints;
+    private float playerDecay;
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
-    // private const string tagWall = "Wall";
+
+    private readonly float pointThreshold = 0.1f; // Distance ? laquelle le personnage doit ?tre consid?r? comme ayant atteint un point
 
     enum Direction
     {
@@ -37,7 +40,14 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        Vector2 size = spriteRenderer.transform.localScale;
+        playerDecay = size.x;
+        startPosition = new(x: 0f, y: (3f + playerDecay));
+
+        territoryPoints = GetPolygonPoints();
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
+
+        ResetPosition(null);
     }
 
     void Update()
@@ -57,9 +67,16 @@ public class Player : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         PolygonGenerator polygon = collision.GetComponent<PolygonGenerator>();
-        if (isTerritoryInProgress && polygon)
+        if (polygon)
         {
-            BackOnPolygon(polygon);
+            if (isTerritoryInProgress)
+            {
+                BackOnPolygon();
+            } else if (TriggerPolygonPoint())
+            {
+                // ChangeDirection(GetNextMove());
+                BackOnPolygon();
+            }
         }
     }
 
@@ -93,22 +110,13 @@ public class Player : MonoBehaviour
 
     private float[] GetNextMove()
     {
-        float[] movements;
-        switch (direction)
+        float[] movements = direction switch
         {
-            case Direction.RIGHT:
-                movements = new[] { 0f, -1f };
-                break;
-            case Direction.LEFT:
-                movements = new[] { 0f, 1f };
-                break;
-            case Direction.DOWN:
-                movements = new[] { -1f, 0f };
-                break;
-            default:
-                movements = new[] { 1f, 0f };
-                break;
-        }
+            Direction.RIGHT => new[] { 0f, -1f },
+            Direction.LEFT => new[] { 0f, 1f },
+            Direction.DOWN => new[] { -1f, 0f },
+            _ => new[] { 1f, 0f },
+        };
         return movements;
     }
 
@@ -134,11 +142,44 @@ public class Player : MonoBehaviour
             direction = Direction.DOWN;
         }
         transform.eulerAngles = new Vector3(0, 0, rotation);
+
+        /*float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg;
+        rb2d.rotation = angle - 90f;*/
     }
 
     private void ResetPosition(Dictionary<string, object> message)
     {
         transform.position = startPosition;
+
+        /*Vector2 direction = startPosition - rb2d.position;
+        if (direction.magnitude < 0.1f)
+        {
+            rb2d.velocity = Vector2.zero;
+            transform.position = startPosition;
+        }
+        else
+        {
+            rb2d.velocity = direction.normalized * moveSpeed;
+        }*/
+
+        /*float t = moveSpeed * Time.deltaTime / Vector2.Distance(transform.position, startPosition);
+        Vector2 newPosition = Vector2.Lerp(transform.position, startPosition, t);
+        Vector2 newDirection = (newPosition - rb2d.position).normalized;
+        rb2d.velocity = newDirection * moveSpeed;*/
+
+        /*Vector2 newDirection = startPosition - rb2d.position;
+        rb2d.velocity = newDirection.normalized * moveSpeed;*/
+    }
+
+    private Vector2[] GetPolygonPoints()
+    {
+        List<Vector2> pointList = polygonGenerator.GetPoints();
+        Vector2 [] points = pointList.ToArray();
+        for (int i = 0; i < points.Length; i++)
+        {
+            points[i].y -= 1;
+        }
+        return points;
     }
 
     // Trigger
@@ -162,10 +203,33 @@ public class Player : MonoBehaviour
         return movements;
     }
 
-    private void BackOnPolygon(PolygonGenerator polygon)
+    private void BackOnPolygon()
     {
-        // Vector3 currentPosition = transform.position;
         isTerritoryInProgress = false;
+
+        transform.position = direction switch
+        {
+            Direction.RIGHT => new(x: (transform.position.x + playerDecay), y: transform.position.y, z: transform.position.z),
+            Direction.LEFT => new(x: (transform.position.x - playerDecay), y: transform.position.y, z: transform.position.z),
+            Direction.DOWN => new(x: transform.position.x, y: (transform.position.y - playerDecay), z: transform.position.z),
+            _ => new(x: transform.position.x, y: (transform.position.y + playerDecay), z: transform.position.z),
+        };
+
         ChangeDirection(GetNextMove());
+    }
+
+    private bool TriggerPolygonPoint()
+    {
+        for (int i=0; i< territoryPoints.Length; i++)
+        {
+            float distanceToPoint = Vector2.Distance(rb2d.position, territoryPoints[i]);
+            //Debug.Log(distanceToPoint);
+            if (distanceToPoint < pointThreshold)
+            {
+                Debug.Log(distanceToPoint);
+                return true;
+            }
+        }
+        return false;
     }
 }
