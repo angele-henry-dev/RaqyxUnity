@@ -85,14 +85,15 @@ public class Player : MonoBehaviour
 
     private void MoveAuto()
     {
-        if (TriggerPolygonPoint())
-        {
-            Debug.Log($"Current direction: {direction}");
-            ChangeDirection(GetNextMove());
-            Debug.Log($"New direction: {direction}");
-        }
         Vector2 newDirection = transform.up;
         rb2d.velocity = newDirection * moveSpeed;
+
+        Vector2? nextPoint = TriggerPolygonPoint();
+        if (nextPoint != null)
+        {
+            transform.position = nextPoint.Value;
+            ChangeDirection(GetNextMove());
+        }
     }
 
     private void MoveManually(float[] movements)
@@ -223,21 +224,20 @@ public class Player : MonoBehaviour
         ChangeDirection(GetNextMove());
     }
 
-    private bool TriggerPolygonPoint()
+    private Vector2? TriggerPolygonPoint()
     {
         Vector2 startingFrom = transform.position;
-        Vector2 targetPoint = GetNextPointIndex();
+        Vector2 targetPoint = GetNextPoint();
         float distanceToPoint = Vector2.Distance(startingFrom, targetPoint);
 
         if (distanceToPoint < pointThreshold)
         {
-            Debug.Log($"Distance {distanceToPoint} from {startingFrom.x}:{startingFrom.y} to {targetPoint.x}:{targetPoint.y}");
-            return true;
+            return targetPoint;
         }
-        return false;
+        return null;
     }
 
-    private Vector2 GetNextPointIndex()
+    private Vector2 GetNextPoint()
     {
         Vector2 currentPosition = transform.position;
 
