@@ -16,7 +16,7 @@ public class Ball : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 1f;
 
-    private const string tagPlayer = "Player";
+    //private const string tagPlayer = "Player";
     private const string tagWallInProgress = "WallInProgress";
 
     private void Start()
@@ -44,7 +44,8 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag(tagPlayer) || collision.gameObject.CompareTag(tagWallInProgress))
+        Player player = collision.GetComponent<Player>();
+        if ((player && player.isTerritoryInProgress) || collision.gameObject.CompareTag(tagWallInProgress))
         {
             // UI effect
             EmitParticle(8);

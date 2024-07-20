@@ -21,12 +21,6 @@ public class GameManager : MonoBehaviour
         NORMAL
     }
 
-    public void IncreaseScore()
-    {
-        score++;
-        CheckWin();
-    }
-
     private void Awake()
     {
         if (instance)
@@ -41,6 +35,12 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.StopListening(EventManager.Event.onStartGame, OnStartGame);
+    }
+
+    public void IncreaseScore()
+    {
+        score++;
+        CheckWin();
     }
 
     private void CheckWin()

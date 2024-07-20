@@ -18,17 +18,18 @@ public class Player : MonoBehaviour
     private Vector2 startPosition;
 
     [SerializeField]
-    private bool isTerritoryInProgress = false;
+    public bool isTerritoryInProgress = false;
 
     [SerializeField]
     private Direction direction = Direction.RIGHT;
 
     private Vector2[] territoryPoints;
+    private int currentPointIndex = 0;
     private float playerDecay;
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
 
-    private readonly float pointThreshold = 0.1f; // Distance ? laquelle le personnage doit ?tre consid?r? comme ayant atteint un point
+    private float pointThreshold = 0.1f; // Distance ? laquelle le personnage doit ?tre consid?r? comme ayant atteint un point
 
     enum Direction
     {
@@ -41,13 +42,13 @@ public class Player : MonoBehaviour
     void Start()
     {
         Vector2 size = spriteRenderer.transform.localScale;
-        playerDecay = size.x;
-        startPosition = new(x: 0f, y: (3f + playerDecay));
+        playerDecay = 0.1f;
+        startPosition = new(x: -2.5f, y: (3f + playerDecay));
 
         territoryPoints = GetPolygonPoints();
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
 
-        ResetPosition(null);
+        ResetPosition();
     }
 
     void Update()
@@ -62,6 +63,11 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         MoveAuto();
+        /*if (TriggerPolygonPoint())
+        {
+            // ChangeDirection(GetNextMove());
+            BackOnPolygon();
+        }*/
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -71,10 +77,6 @@ public class Player : MonoBehaviour
         {
             if (isTerritoryInProgress)
             {
-                BackOnPolygon();
-            } else if (TriggerPolygonPoint())
-            {
-                // ChangeDirection(GetNextMove());
                 BackOnPolygon();
             }
         }
@@ -89,8 +91,28 @@ public class Player : MonoBehaviour
 
     private void MoveAuto()
     {
-        Vector2 direction = transform.up;
-        rb2d.velocity = direction * moveSpeed;
+        /*Vector2 direction = transform.up;
+        rb2d.velocity = direction * moveSpeed;*/
+
+        if (territoryPoints.Length < 2)
+            return;
+
+        Vector2 targetPoint = territoryPoints[currentPointIndex];
+        Vector2 newDirection = (targetPoint - rb2d.position).normalized;
+        float distanceToPoint = Vector2.Distance(rb2d.position, targetPoint);
+
+        if (distanceToPoint < pointThreshold)
+        {
+            currentPointIndex = (currentPointIndex + 1) % territoryPoints.Length;
+            targetPoint = territoryPoints[currentPointIndex];
+            newDirection = (targetPoint - rb2d.position).normalized;
+        }
+
+        rb2d.velocity = newDirection * moveSpeed;
+
+        /*float angle = Mathf.Atan2(newDirection.y, newDirection.x) * Mathf.Rad2Deg;
+        rb2d.rotation = angle - 90f;*/
+        AdjustSpriteRotation();
     }
 
     private void MoveManually(float[] movements)
@@ -124,7 +146,7 @@ public class Player : MonoBehaviour
 
     private void AdjustSpriteRotation()
     {
-        float rotation = 0f;
+        /*float rotation = 0f;
         direction = Direction.UP;
 
         if (rb2d.velocity.x < 0f)
@@ -141,13 +163,13 @@ public class Player : MonoBehaviour
             rotation = 180f;
             direction = Direction.DOWN;
         }
-        transform.eulerAngles = new Vector3(0, 0, rotation);
+        transform.eulerAngles = new Vector3(0, 0, rotation);*/
 
-        /*float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg;
-        rb2d.rotation = angle - 90f;*/
+        float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg;
+        rb2d.rotation = angle - 90f;
     }
 
-    private void ResetPosition(Dictionary<string, object> message)
+    private void ResetPosition(Dictionary<string, object> message = null)
     {
         transform.position = startPosition;
 
@@ -178,6 +200,10 @@ public class Player : MonoBehaviour
         for (int i = 0; i < points.Length; i++)
         {
             points[i].y -= 1;
+
+            points[i].y = points[i].y > 0 ? (points[i].y + playerDecay) : (points[i].y - playerDecay);
+            points[i].x = points[i].x > 0 ? (points[i].x + playerDecay) : (points[i].x - playerDecay);
+            Debug.Log($"Point {i}: {points[i].x}/{points[i].y}");
         }
         return points;
     }
@@ -223,10 +249,9 @@ public class Player : MonoBehaviour
         for (int i=0; i< territoryPoints.Length; i++)
         {
             float distanceToPoint = Vector2.Distance(rb2d.position, territoryPoints[i]);
-            //Debug.Log(distanceToPoint);
             if (distanceToPoint < pointThreshold)
             {
-                Debug.Log(distanceToPoint);
+                Debug.Log("Occured!");
                 return true;
             }
         }
