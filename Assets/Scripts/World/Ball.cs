@@ -16,14 +16,12 @@ public class Ball : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 1f;
 
-    //private const string tagPlayer = "Player";
     private const string tagWallInProgress = "WallInProgress";
 
     private void Start()
     {
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
         EventManager.StartListening(EventManager.Event.onStartGame, ResetPosition);
-        ResetPosition();
     }
 
     private void OnDestroy()

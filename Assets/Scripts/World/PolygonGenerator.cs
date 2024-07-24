@@ -7,45 +7,67 @@ public class PolygonGenerator : MonoBehaviour
     [Header("Refs")]
     [SerializeField]
     private Shape shape;
+    [SerializeField]
+    private float decay;
 
-    List<Vector2> points;
-
-    public List<Vector2> GetPoints()
-    {
-        return points;
-    }
+    Vector2[] points;
 
     private void Awake()
     {
-        GeneratePolygon();
+        // GeneratePolygon();
+        EventManager.StartListening(EventManager.Event.onStartGame, GeneratePolygon);
     }
 
-    private void GeneratePolygon()
+    /*private void GenerateOutsidePolygon()
     {
-        shape.settings.fillColor = Color.clear;
-        shape.settings.outlineColor = Color.white;
+        Vector2 size = spriteDecay.transform.localScale;
+        float decay = size.x - 0.1f;
 
-        // Creation of the points
-        points = new();
-        points.Add(new Vector2(-2f, 4f));
-        points.Add(new Vector2(2f, 4f));
-        points.Add(new Vector2(2f, -2f));
-        points.Add(new Vector2(-2f, -2f));
+        List<Vector2> pointList = GetPoints();
+        Vector2 [] points = pointList.ToArray();
+        for (int i = 0; i < points.Length; i++)
+        {
+            points[i].y -= 1;
+
+            points[i].y = points[i].y > 0 ? (points[i].y + (decay)) : (points[i].y - (decay));
+            points[i].x = points[i].x > 0 ? (points[i].x + (decay)) : (points[i].x - (decay));
+        }
+    }*/
+
+    private void GeneratePolygon(Dictionary<string, object> message = null)
+    {
+        if (message.TryGetValue("polygonPoints", out object value))
+        {
+            points = (Vector2[]) value;
+            if (decay > 0f)
+            {
+                for (int i = 0; i < points.Length; i++)
+                {
+                    // points[i].y -= 1;
+
+                    points[i].y = points[i].y > 0 ? (points[i].y + (decay)) : (points[i].y - (decay));
+                    points[i].x = points[i].x > 0 ? (points[i].x + (decay)) : (points[i].x - (decay));
+                }
+            }
+        }
+
+        shape.settings.fillColor = Color.clear;
+        // shape.settings.outlineColor = Color.white;
 
         // Apply new points to the shape
-        shape.settings.polyVertices = points.ToArray();
+        shape.settings.polyVertices = points;
 
         // Add the points to the collider
         EdgeCollider2D collider = gameObject.AddComponent<EdgeCollider2D>();
-        Vector2[] colliderpoints = new Vector2[points.Count + 1];
-        for (int i = 0; i < points.Count; i++)
+        Vector2[] colliderpoints = new Vector2[points.Length + 1];
+        for (int i = 0; i < points.Length; i++)
         {
             colliderpoints[i] = new Vector2(
                 (points[i].x < 0f) ? -0.5f : 0.5f,
                 (points[i].y < 0f) ? -0.5f : 0.5f
             );
         }
-        colliderpoints[points.Count] = new Vector2(
+        colliderpoints[points.Length] = new Vector2(
             (points[0].x < 0f) ? -0.5f : 0.5f,
             (points[0].y < 0f) ? -0.5f : 0.5f
         ); // Close the loop

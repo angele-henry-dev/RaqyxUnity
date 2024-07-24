@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
     private const string tagWall = "Wall";
+    private const string tagWallOutside = "WallOutside";
 
     private readonly float pointThreshold = 0.1f;
 
@@ -45,11 +46,8 @@ public class Player : MonoBehaviour
         playerDecay = size.x - 0.1f;
         startPosition = new(x: -1.5f, y: (3f + playerDecay));
 
-        territoryPoints = GetPolygonPoints();
-
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
-
-        ResetPosition();
+        EventManager.StartListening(EventManager.Event.onStartGame, ResetPosition);
     }
 
     void Update()
@@ -71,18 +69,12 @@ public class Player : MonoBehaviour
         Debug.Log("Collision!");
         if (collision.gameObject.CompareTag(tagWall) && isTerritoryInProgress)
         {
-            BackOnPolygon(collision);
+            ChangeDirection(GetNextMove());
+        } else if (collision.gameObject.CompareTag(tagWallOutside) && !isTerritoryInProgress)
+        {
+            ChangeDirection(GetNextMove());
         }
     }
-
-    /*void OnTriggerEnter2D(Collider2D collision)
-    {
-        PolygonGenerator polygon = collision.GetComponent<PolygonGenerator>();
-        if (polygon && isTerritoryInProgress)
-        {
-           BackOnPolygon(collision);
-        }
-    }*/
 
     void OnDestroy()
     {
@@ -96,7 +88,7 @@ public class Player : MonoBehaviour
         Vector2 newDirection = transform.up;
         rb2d.velocity = newDirection * moveSpeed;
 
-        if (!isTerritoryInProgress)
+        /*if (!isTerritoryInProgress)
         {
             Vector2? nextPoint = TriggerPolygonPoint();
             if (nextPoint != null)
@@ -104,7 +96,7 @@ public class Player : MonoBehaviour
                 transform.position = nextPoint.Value;
                 ChangeDirection(GetNextMove());
             }
-        }
+        }*/
     }
 
     private void MoveManually(float[] movements)
@@ -185,20 +177,6 @@ public class Player : MonoBehaviour
         rb2d.velocity = newDirection.normalized * moveSpeed;*/
     }
 
-    private Vector2[] GetPolygonPoints()
-    {
-        List<Vector2> pointList = polygonGenerator.GetPoints();
-        Vector2 [] points = pointList.ToArray();
-        for (int i = 0; i < points.Length; i++)
-        {
-            points[i].y -= 1;
-
-            points[i].y = points[i].y > 0 ? (points[i].y + (playerDecay)) : (points[i].y - (playerDecay));
-            points[i].x = points[i].x > 0 ? (points[i].x + (playerDecay)) : (points[i].x - (playerDecay));
-        }
-        return points;
-    }
-
     // Trigger
 
     private float[] ProcessInput()
@@ -220,24 +198,24 @@ public class Player : MonoBehaviour
         return movements;
     }
 
-    private void BackOnPolygon(Collision2D collision)
+    private void BackOnPolygon()
     {
         isTerritoryInProgress = false;
+        // ContactPoint2D contact = collision.GetContact(0);
         // TODO
-        Debug.Log($"{collision.contacts}");
 
         switch (direction) {
             case Direction.RIGHT:
-                transform.position = new Vector2((transform.position.x + pointThreshold), (transform.position.y));
+                transform.position = new Vector2((transform.position.x + playerDecay), (transform.position.y));
                 break;
             case Direction.LEFT:
-                transform.position = new Vector2((transform.position.x - pointThreshold), (transform.position.y));
+                transform.position = new Vector2((transform.position.x - playerDecay), (transform.position.y));
                 break;
             case Direction.DOWN:
-                transform.position = new Vector2((transform.position.x), (transform.position.y - pointThreshold));
+                transform.position = new Vector2((transform.position.x), (transform.position.y - playerDecay));
                 break;
             case Direction.UP:
-                transform.position = new Vector2((transform.position.x), (transform.position.y + pointThreshold));
+                transform.position = new Vector2((transform.position.x), (transform.position.y + playerDecay));
                 break;
         }
 

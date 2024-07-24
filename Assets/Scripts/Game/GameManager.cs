@@ -32,6 +32,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        Dictionary<string, object> message = new();
+        Vector2[] polygonPoints = {
+            new Vector2(-2f, 4f),
+            new Vector2(2f, 4f),
+            new Vector2(2f, -2f),
+            new Vector2(-2f, -2f)
+        };
+        message.Add("polygonPoints", polygonPoints);
+        EventManager.TriggerEvent(EventManager.Event.onStartGame, message);
+    }
+
     private void OnDestroy()
     {
         EventManager.StopListening(EventManager.Event.onStartGame, OnStartGame);
