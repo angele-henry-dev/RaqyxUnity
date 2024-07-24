@@ -51,7 +51,9 @@ MonoBehaviour:
   spriteRenderer: {fileID: 2572991642246350410}
   polygonGenerator: {fileID: 0}
   moveSpeed: 1.5
-  startPosition: {x: -2, y: 3, z: 0}
+  startPosition: {x: -2, y: 3}
+  isTerritoryInProgress: 0
+  direction: 2
 --- !u!50 &4390568821096359437
 Rigidbody2D:
   serializedVersion: 4
@@ -108,7 +110,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

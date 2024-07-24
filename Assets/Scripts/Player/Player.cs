@@ -27,8 +27,9 @@ public class Player : MonoBehaviour
     private float playerDecay;
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
+    private const string tagWall = "Wall";
 
-    private readonly float pointThreshold = 0.1f; // Distance ? laquelle le personnage doit ?tre consid?r? comme ayant atteint un point
+    private readonly float pointThreshold = 0.1f;
 
     enum Direction
     {
@@ -42,7 +43,7 @@ public class Player : MonoBehaviour
     {
         Vector2 size = spriteRenderer.transform.localScale;
         playerDecay = size.x - 0.1f;
-        startPosition = new(x: -1.5f, y: (3f));
+        startPosition = new(x: -1.5f, y: (3f + playerDecay));
 
         territoryPoints = GetPolygonPoints();
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
@@ -64,17 +65,23 @@ public class Player : MonoBehaviour
         MoveAuto();
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        PolygonGenerator polygon = collision.GetComponent<PolygonGenerator>();
-        if (polygon)
+        Debug.Log("Collision!");
+        if (collision.gameObject.CompareTag(tagWall) && isTerritoryInProgress)
         {
-            if (isTerritoryInProgress)
-            {
-                BackOnPolygon();
-            }
+            BackOnPolygon(collision);
         }
     }
+
+    /*void OnTriggerEnter2D(Collider2D collision)
+    {
+        PolygonGenerator polygon = collision.GetComponent<PolygonGenerator>();
+        if (polygon && isTerritoryInProgress)
+        {
+           BackOnPolygon(collision);
+        }
+    }*/
 
     void OnDestroy()
     {
@@ -88,11 +95,14 @@ public class Player : MonoBehaviour
         Vector2 newDirection = transform.up;
         rb2d.velocity = newDirection * moveSpeed;
 
-        Vector2? nextPoint = TriggerPolygonPoint();
-        if (nextPoint != null)
+        if (!isTerritoryInProgress)
         {
-            transform.position = nextPoint.Value;
-            ChangeDirection(GetNextMove());
+            Vector2? nextPoint = TriggerPolygonPoint();
+            if (nextPoint != null)
+            {
+                transform.position = nextPoint.Value;
+                ChangeDirection(GetNextMove());
+            }
         }
     }
 
@@ -209,17 +219,34 @@ public class Player : MonoBehaviour
         return movements;
     }
 
-    private void BackOnPolygon()
+    private void BackOnPolygon(Collision2D collision)
     {
         isTerritoryInProgress = false;
+        // TODO
+        Debug.Log($"{collision.contacts}");
 
-        transform.position = direction switch
+        switch (direction) {
+            case Direction.RIGHT:
+                transform.position = new Vector2((transform.position.x + pointThreshold), (transform.position.y));
+                break;
+            case Direction.LEFT:
+                transform.position = new Vector2((transform.position.x - pointThreshold), (transform.position.y));
+                break;
+            case Direction.DOWN:
+                transform.position = new Vector2((transform.position.x), (transform.position.y - pointThreshold));
+                break;
+            case Direction.UP:
+                transform.position = new Vector2((transform.position.x), (transform.position.y + pointThreshold));
+                break;
+        }
+
+        /*transform.position = direction switch
         {
             Direction.RIGHT => new(x: (transform.position.x), y: transform.position.y, z: transform.position.z),
             Direction.LEFT => new(x: (transform.position.x), y: transform.position.y, z: transform.position.z),
             Direction.DOWN => new(x: transform.position.x, y: (transform.position.y), z: transform.position.z),
             _ => new(x: transform.position.x, y: (transform.position.y), z: transform.position.z),
-        };
+        };*/
 
         ChangeDirection(GetNextMove());
     }
@@ -227,50 +254,62 @@ public class Player : MonoBehaviour
     private Vector2? TriggerPolygonPoint()
     {
         Vector2 startingFrom = transform.position;
-        Vector2 targetPoint = GetNextPoint();
-        float distanceToPoint = Vector2.Distance(startingFrom, targetPoint);
+        Vector2? targetPoint = GetNextPoint();
 
-        if (distanceToPoint < pointThreshold)
+        if (targetPoint != null)
         {
-            return targetPoint;
+            float distanceToPoint = Vector2.Distance(startingFrom, (Vector2) targetPoint);
+            Debug.Log(distanceToPoint);
+
+            if (distanceToPoint < pointThreshold + playerDecay)
+            {
+                Debug.Log($"{targetPoint?.x}:{targetPoint?.y}");
+                return targetPoint;
+            }
         }
         return null;
     }
 
-    private Vector2 GetNextPoint()
+    private Vector2? GetNextPoint()
     {
         Vector2 currentPosition = transform.position;
 
         for (int i = 0; i < territoryPoints.Length; i++)
         {
+            // Vector2 getPoint = territoryPoints[i];
             switch (direction)
             {
                 case Direction.UP:
-                    if (territoryPoints[i].x == currentPosition.x && territoryPoints[i].y > currentPosition.y)
+                    if (IsEqualTo(territoryPoints[i].x, currentPosition.x + playerDecay) && territoryPoints[i].y > currentPosition.y)
                     {
                         return territoryPoints[i];
                     }
                     break;
                 case Direction.DOWN:
-                    if (territoryPoints[i].x == currentPosition.x && territoryPoints[i].y < currentPosition.y)
+                    if (IsEqualTo(territoryPoints[i].x, currentPosition.x - playerDecay) && territoryPoints[i].y < currentPosition.y)
                     {
                         return territoryPoints[i];
                     }
                     break;
                 case Direction.LEFT:
-                    if (territoryPoints[i].y == currentPosition.y && territoryPoints[i].x < currentPosition.x)
+                    if (IsEqualTo(territoryPoints[i].y, currentPosition.y + playerDecay) && territoryPoints[i].x < currentPosition.x)
                     {
                         return territoryPoints[i];
                     }
                     break;
                 case Direction.RIGHT:
-                    if (territoryPoints[i].y == currentPosition.y && territoryPoints[i].x > currentPosition.x)
+                    if (IsEqualTo(territoryPoints[i].y, currentPosition.y - playerDecay) && (territoryPoints[i].x > currentPosition.x))
                     {
                         return territoryPoints[i];
                     }
                     break;
             }
         }
-        return currentPosition;
+        return null;
+    }
+
+    private bool IsEqualTo(float a, float b)
+    {
+        return System.Math.Abs(a - b) < float.Epsilon;
     }
 }
