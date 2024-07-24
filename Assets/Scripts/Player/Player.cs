@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
         startPosition = new(x: -1.5f, y: (3f + playerDecay));
 
         territoryPoints = GetPolygonPoints();
+
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
 
         ResetPosition();
@@ -192,8 +193,8 @@ public class Player : MonoBehaviour
         {
             points[i].y -= 1;
 
-            points[i].y = points[i].y > 0 ? (points[i].y) : (points[i].y);
-            points[i].x = points[i].x > 0 ? (points[i].x) : (points[i].x);
+            points[i].y = points[i].y > 0 ? (points[i].y + (playerDecay)) : (points[i].y - (playerDecay));
+            points[i].x = points[i].x > 0 ? (points[i].x + (playerDecay)) : (points[i].x - (playerDecay));
         }
         return points;
     }
@@ -259,11 +260,9 @@ public class Player : MonoBehaviour
         if (targetPoint != null)
         {
             float distanceToPoint = Vector2.Distance(startingFrom, (Vector2) targetPoint);
-            Debug.Log(distanceToPoint);
 
-            if (distanceToPoint < pointThreshold + playerDecay)
+            if (distanceToPoint < pointThreshold)
             {
-                Debug.Log($"{targetPoint?.x}:{targetPoint?.y}");
                 return targetPoint;
             }
         }
@@ -276,29 +275,28 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < territoryPoints.Length; i++)
         {
-            // Vector2 getPoint = territoryPoints[i];
             switch (direction)
             {
                 case Direction.UP:
-                    if (IsEqualTo(territoryPoints[i].x, currentPosition.x + playerDecay) && territoryPoints[i].y > currentPosition.y)
+                    if (IsEqualTo(territoryPoints[i].x, currentPosition.x) && territoryPoints[i].y > currentPosition.y)
                     {
                         return territoryPoints[i];
                     }
                     break;
                 case Direction.DOWN:
-                    if (IsEqualTo(territoryPoints[i].x, currentPosition.x - playerDecay) && territoryPoints[i].y < currentPosition.y)
+                    if (IsEqualTo(territoryPoints[i].x, currentPosition.x) && territoryPoints[i].y < currentPosition.y)
                     {
                         return territoryPoints[i];
                     }
                     break;
                 case Direction.LEFT:
-                    if (IsEqualTo(territoryPoints[i].y, currentPosition.y + playerDecay) && territoryPoints[i].x < currentPosition.x)
+                    if (IsEqualTo(territoryPoints[i].y, currentPosition.y) && territoryPoints[i].x < currentPosition.x)
                     {
                         return territoryPoints[i];
                     }
                     break;
                 case Direction.RIGHT:
-                    if (IsEqualTo(territoryPoints[i].y, currentPosition.y - playerDecay) && (territoryPoints[i].x > currentPosition.x))
+                    if (IsEqualTo(territoryPoints[i].y, currentPosition.y) && (territoryPoints[i].x > currentPosition.x))
                     {
                         return territoryPoints[i];
                     }
