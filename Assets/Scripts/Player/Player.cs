@@ -33,10 +33,9 @@ public class Player : MonoBehaviour
     {
         // Initialize the starting position, the direction and the territory
         Vector2 size = spriteRenderer.transform.localScale;
-        //playerDecay = size.x / 2f;
         startPosition = new(x: -1.5f, y: 3f + (size.x / 2f));
         SetDirection(Vector2.right);
-        isTerritoryInProgress = false;
+        SetTerritoryInProgress(false);
 
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
         EventManager.StartListening(EventManager.Event.onStartGame, ResetPosition);
@@ -61,7 +60,7 @@ public class Player : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
 
-        if (isTerritoryInProgress && collision.gameObject.CompareTag(tagEnnemy))
+        if (collision.gameObject.CompareTag(tagEnnemy) && isTerritoryInProgress)
             HandleCollisionEnnemy();
         else if (collision.gameObject.CompareTag(tagWallOutside))
             HandleCollisionOutsideWall();
@@ -90,6 +89,7 @@ public class Player : MonoBehaviour
     {
         const float pushOutFactor = 0.01f;
 
+        // Determine the next direction based on the current direction and whether the movement is reversed
         NextDirection = Direction switch
         {
             Vector2 v when v == Vector2.right => new Vector2(0, isReversed ? 1 : -1),
@@ -99,10 +99,11 @@ public class Player : MonoBehaviour
             _ => Vector2.zero,
         };
 
+        // Move the player slightly to avoid staying against the wall
         Vector2 pushOut = rb2d.position * -pushOutFactor;
         rb2d.position += pushOut;
 
-        isTerritoryInProgress = false;
+        SetTerritoryInProgress(false);
     }
 
     private void HandlePlayerInput()
@@ -118,25 +119,30 @@ public class Player : MonoBehaviour
         if (horizontalMovement == 0 && verticalMovement == 0)
             return;
 
-        if (verticalMovement > 0)
-            SetDirection(Vector2.up);
-        else if (verticalMovement < 0)
-            SetDirection(Vector2.down);
-        else if (horizontalMovement < 0)
-            SetDirection(Vector2.left);
-        else if (horizontalMovement > 0)
-            SetDirection(Vector2.right);
+        bool directionChanged = false;
 
-        isTerritoryInProgress = true;
+        if (verticalMovement > 0)
+            directionChanged = SetDirection(Vector2.up);
+        else if (verticalMovement < 0)
+            directionChanged = SetDirection(Vector2.down);
+        else if (horizontalMovement < 0)
+            directionChanged = SetDirection(Vector2.left);
+        else if (horizontalMovement > 0)
+            directionChanged = SetDirection(Vector2.right);
+
+        if (directionChanged)
+            SetTerritoryInProgress(true);
     }
 
-    private void SetDirection(Vector2 direction, bool forced = false)
+    private bool SetDirection(Vector2 direction, bool forced = false)
     {
         if (forced || Valid(direction))
         {
             Direction = direction;
             NextDirection = Vector2.zero;
+            return true;
         }
+        return false;
     }
 
     private void AdjustSpriteRotation()
@@ -149,6 +155,7 @@ public class Player : MonoBehaviour
     {
         NextDirection = Vector2.zero;
         transform.position = startPosition;
+        SetTerritoryInProgress(false);
 
         /*Vector2 direction = startPosition - rb2d.position;
         if (direction.magnitude < 0.1f)
@@ -168,5 +175,10 @@ public class Player : MonoBehaviour
 
         /*Vector2 newDirection = startPosition - rb2d.position;
         rb2d.velocity = newDirection.normalized * moveSpeed;*/
+    }
+
+    private void SetTerritoryInProgress(bool inProgress)
+    {
+        isTerritoryInProgress = inProgress;
     }
 }
