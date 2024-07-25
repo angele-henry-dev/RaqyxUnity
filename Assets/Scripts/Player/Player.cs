@@ -66,9 +66,29 @@ public class Player : MonoBehaviour
             HandleCollisionOutsideWall();
     }
 
-    private bool Valid(Vector2 dir)
+    private bool Valid(Vector2 newDirection)
     {
-        // TODO
+        // IF already in direction NO
+        if (newDirection == Direction)
+            return false;
+
+        // IF trying to reverse NO
+        if ((newDirection == Vector2.right && Direction == Vector2.left) ||
+        (newDirection == Vector2.left && Direction == Vector2.right) ||
+        (newDirection == Vector2.up && Direction == Vector2.down) ||
+        (newDirection == Vector2.down && Direction == Vector2.up))
+            return false;
+
+        if (!isTerritoryInProgress)
+        {
+            // IF WALL in new direction NO
+            if ((Direction == Vector2.left && newDirection == Vector2.down) ||
+            (Direction == Vector2.right && newDirection == Vector2.up) ||
+            (Direction == Vector2.down && newDirection == Vector2.right) ||
+            (Direction == Vector2.up && newDirection == Vector2.left))
+                return false;
+        }
+
         return true;
     }
 
@@ -108,41 +128,44 @@ public class Player : MonoBehaviour
 
     private void HandlePlayerInput()
     {
+        // If the next direction is defined then use it
         if (NextDirection != Vector2.zero)
         {
             SetDirection(NextDirection);
         }
 
+        // Get the player input
         float horizontalMovement = Input.GetAxis(axisHorizontal);
         float verticalMovement = Input.GetAxis(axisVertical);
 
+        // If not inputs from the player
         if (horizontalMovement == 0 && verticalMovement == 0)
             return;
 
-        bool directionChanged = false;
+        // Determine the new direction depending on the player input
+        Vector2 newDirection = Vector2.zero;
 
         if (verticalMovement > 0)
-            directionChanged = SetDirection(Vector2.up);
+            newDirection = Vector2.up;
         else if (verticalMovement < 0)
-            directionChanged = SetDirection(Vector2.down);
+            newDirection = Vector2.down;
         else if (horizontalMovement < 0)
-            directionChanged = SetDirection(Vector2.left);
+            newDirection = Vector2.left;
         else if (horizontalMovement > 0)
-            directionChanged = SetDirection(Vector2.right);
+            newDirection = Vector2.right;
 
-        if (directionChanged)
+        // If the new direction is valid then let's draw a territory!
+        if (Valid(newDirection))
+        {
+            SetDirection(newDirection);
             SetTerritoryInProgress(true);
+        }
     }
 
-    private bool SetDirection(Vector2 direction, bool forced = false)
+    private void SetDirection(Vector2 direction)
     {
-        if (forced || Valid(direction))
-        {
-            Direction = direction;
-            NextDirection = Vector2.zero;
-            return true;
-        }
-        return false;
+        Direction = direction;
+        NextDirection = Vector2.zero;
     }
 
     private void AdjustSpriteRotation()
