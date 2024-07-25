@@ -4984,7 +4984,7 @@ GameObject:
   - component: {fileID: 2277458368257307385}
   - component: {fileID: 1260844457020958016}
   - component: {fileID: 1690324465842016484}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5022,10 +5022,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb2d: {fileID: 1260844457020958016}
-  northWall: {fileID: 0}
-  southWall: {fileID: 0}
-  westWall: {fileID: 0}
-  eastWall: {fileID: 0}
   collisionParticle: {fileID: 8162321324443477051}
   maxInitialAngle: 0.67
   moveSpeed: 1.5

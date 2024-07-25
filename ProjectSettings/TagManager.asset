@@ -14,10 +14,10 @@ TagManager:
   - Post
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Ennemy
+  - Wall
+  - WallOutside
   - 
   - 
   - 
