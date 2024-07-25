@@ -40,24 +40,20 @@ public class Ball : MonoBehaviour
         rb2d.velocity = dir * moveSpeed;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Player player = collision.GetComponent<Player>();
+        EmitParticle(8);
+
+        Player player = collision.gameObject.GetComponent<Player>();
         if ((player && player.isTerritoryInProgress) || collision.gameObject.CompareTag(tagWallInProgress))
         {
             // UI effect
-            EmitParticle(8);
             GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
 
             // Game effect
             Debug.Log("Game over!");
             GameManager.instance.IncreaseScore();
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        EmitParticle(8);
     }
 
     private void EmitParticle(int amount)
