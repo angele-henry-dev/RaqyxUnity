@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     private Vector2 startPosition;
 
     public bool isTerritoryInProgress = false;
+    public bool isReversed = false;
 
     public Vector2 Direction { get; private set; }
     public Vector2 NextDirection { get; private set; }
@@ -54,42 +55,8 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (NextDirection != Vector2.zero)
-        {
-            SetDirection(NextDirection);
-        }
-
-        if (Input.GetAxis(axisVertical) > 0)
-        {
-            SetDirection(Vector2.up);
-            isTerritoryInProgress = true;
-        }
-        else if (Input.GetAxis(axisVertical) < 0)
-        {
-            SetDirection(Vector2.down);
-            isTerritoryInProgress = true;
-        }
-        else if (Input.GetAxis(axisHorizontal) < 0)
-        {
-            SetDirection(Vector2.left);
-            isTerritoryInProgress = true;
-        }
-        else if (Input.GetAxis(axisHorizontal) > 0)
-        {
-            SetDirection(Vector2.right);
-            isTerritoryInProgress = true;
-        }
-
+        GetInput();
         AdjustSpriteRotation();
-    }
-
-    public void SetDirection(Vector2 direction, bool forced = false)
-    {
-        if (forced || Valid(direction))
-        {
-            Direction = direction;
-            NextDirection = Vector2.zero;
-        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -109,22 +76,22 @@ public class Player : MonoBehaviour
         {
             if (Direction == Vector2.right)
             {
-                NextDirection = new(x: 0, y: -1);
+                NextDirection = new(x: 0, y: isReversed ? 1 : -1);
 
             }
             else if (Direction == Vector2.left)
             {
-                NextDirection = new(x: 0, y: 1);
+                NextDirection = new(x: 0, y: isReversed ? -1 : 1);
             }
 
             else if (Direction == Vector2.down)
             {
-                NextDirection = new(x: -1, y: 0);
+                NextDirection = new(x: isReversed ? 1 : -1, y: 0);
             }
 
             else if (Direction == Vector2.up)
             {
-                NextDirection = new(x: 1, y: 0);
+                NextDirection = new(x: isReversed ? -1 : 1, y: 0);
             }
             else
             {
@@ -138,10 +105,49 @@ public class Player : MonoBehaviour
         }
     }
 
-    bool Valid(Vector2 dir)
+    private bool Valid(Vector2 dir)
     {
         // TODO
         return true;
+    }
+
+    private void GetInput()
+    {
+        if (NextDirection != Vector2.zero)
+        {
+            SetDirection(NextDirection);
+        }
+
+        float[] movements = { Input.GetAxis(axisHorizontal), Input.GetAxis(axisVertical) };
+        if (movements[0] == 0 && movements[1] == 0)
+            return;
+
+        if (movements[1] > 0)
+        {
+            SetDirection(Vector2.up);
+        }
+        else if (movements[1] < 0)
+        {
+            SetDirection(Vector2.down);
+        }
+        else if (movements[0] < 0)
+        {
+            SetDirection(Vector2.left);
+        }
+        else if (movements[0] > 0)
+        {
+            SetDirection(Vector2.right);
+        }
+        isTerritoryInProgress = true;
+    }
+
+    private void SetDirection(Vector2 direction, bool forced = false)
+    {
+        if (forced || Valid(direction))
+        {
+            Direction = direction;
+            NextDirection = Vector2.zero;
+        }
     }
 
     private void AdjustSpriteRotation()
