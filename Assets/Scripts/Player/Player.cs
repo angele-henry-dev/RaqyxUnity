@@ -31,11 +31,12 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        // Initialize the starting position, the direction and the territory
         Vector2 size = spriteRenderer.transform.localScale;
         //playerDecay = size.x / 2f;
         startPosition = new(x: -1.5f, y: 3f + (size.x / 2f));
-        isTerritoryInProgress = false;
         SetDirection(Vector2.right);
+        isTerritoryInProgress = false;
 
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
         EventManager.StartListening(EventManager.Event.onStartGame, ResetPosition);
@@ -48,14 +49,12 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector2 position = rb2d.position;
-        Vector2 translation = speed * Time.fixedDeltaTime * Direction;
-        rb2d.MovePosition(position + translation);
+        MoveAutomatically();
     }
 
     void Update()
     {
-        GetInput();
+        HandlePlayerInput();
         AdjustSpriteRotation();
     }
 
@@ -63,46 +62,9 @@ public class Player : MonoBehaviour
     {
 
         if (isTerritoryInProgress && collision.gameObject.CompareTag(tagEnnemy))
-        {
-            // UI effect
-            GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
-
-            // Game effect
-            Debug.Log("Game over!");
-            GameManager.instance.IncreaseScore();
-        }
-
+            HandleCollisionEnnemy();
         else if (collision.gameObject.CompareTag(tagWallOutside))
-        {
-            if (Direction == Vector2.right)
-            {
-                NextDirection = new(x: 0, y: isReversed ? 1 : -1);
-
-            }
-            else if (Direction == Vector2.left)
-            {
-                NextDirection = new(x: 0, y: isReversed ? -1 : 1);
-            }
-
-            else if (Direction == Vector2.down)
-            {
-                NextDirection = new(x: isReversed ? 1 : -1, y: 0);
-            }
-
-            else if (Direction == Vector2.up)
-            {
-                NextDirection = new(x: isReversed ? -1 : 1, y: 0);
-            }
-            else
-            {
-                NextDirection = Vector2.zero;
-            }
-
-            // Move a bit the player to avoid staying against the outside wall
-            Vector2 pushOut = rb2d.position * -0.01f;
-            rb2d.position += pushOut;
-            isTerritoryInProgress = false;
-        }
+            HandleCollisionOutsideWall();
     }
 
     private bool Valid(Vector2 dir)
@@ -111,33 +73,60 @@ public class Player : MonoBehaviour
         return true;
     }
 
-    private void GetInput()
+    private void MoveAutomatically()
+    {
+        Vector2 position = rb2d.position;
+        Vector2 translation = speed * Time.fixedDeltaTime * Direction;
+        rb2d.MovePosition(position + translation);
+    }
+
+    private void HandleCollisionEnnemy()
+    {
+        GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
+        GameManager.instance.IncreaseScore();
+    }
+
+    private void HandleCollisionOutsideWall()
+    {
+        const float pushOutFactor = 0.01f;
+
+        NextDirection = Direction switch
+        {
+            Vector2 v when v == Vector2.right => new Vector2(0, isReversed ? 1 : -1),
+            Vector2 v when v == Vector2.left => new Vector2(0, isReversed ? -1 : 1),
+            Vector2 v when v == Vector2.down => new Vector2(isReversed ? 1 : -1, 0),
+            Vector2 v when v == Vector2.up => new Vector2(isReversed ? -1 : 1, 0),
+            _ => Vector2.zero,
+        };
+
+        Vector2 pushOut = rb2d.position * -pushOutFactor;
+        rb2d.position += pushOut;
+
+        isTerritoryInProgress = false;
+    }
+
+    private void HandlePlayerInput()
     {
         if (NextDirection != Vector2.zero)
         {
             SetDirection(NextDirection);
         }
 
-        float[] movements = { Input.GetAxis(axisHorizontal), Input.GetAxis(axisVertical) };
-        if (movements[0] == 0 && movements[1] == 0)
+        float horizontalMovement = Input.GetAxis(axisHorizontal);
+        float verticalMovement = Input.GetAxis(axisVertical);
+
+        if (horizontalMovement == 0 && verticalMovement == 0)
             return;
 
-        if (movements[1] > 0)
-        {
+        if (verticalMovement > 0)
             SetDirection(Vector2.up);
-        }
-        else if (movements[1] < 0)
-        {
+        else if (verticalMovement < 0)
             SetDirection(Vector2.down);
-        }
-        else if (movements[0] < 0)
-        {
+        else if (horizontalMovement < 0)
             SetDirection(Vector2.left);
-        }
-        else if (movements[0] > 0)
-        {
+        else if (horizontalMovement > 0)
             SetDirection(Vector2.right);
-        }
+
         isTerritoryInProgress = true;
     }
 
