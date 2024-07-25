@@ -44,8 +44,7 @@ public class Ball : MonoBehaviour
     {
         EmitParticle(8);
 
-        Player player = collision.gameObject.GetComponent<Player>();
-        if ((player && player.isTerritoryInProgress) || collision.gameObject.CompareTag(tagWallInProgress))
+        if (collision.gameObject.CompareTag(tagWallInProgress))
         {
             // UI effect
             GameManager.instance.screenShake.StartShake(0.33f, 0.1f);

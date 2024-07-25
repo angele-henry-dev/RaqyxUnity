@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
     private const string tagWallOutside = "WallOutside";
+    private const string tagEnnemy = "Ennemy";
 
     void Start()
     {
@@ -93,7 +94,18 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag(tagWallOutside))
+
+        if (isTerritoryInProgress && collision.gameObject.CompareTag(tagEnnemy))
+        {
+            // UI effect
+            GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
+
+            // Game effect
+            Debug.Log("Game over!");
+            GameManager.instance.IncreaseScore();
+        }
+
+        else if (collision.gameObject.CompareTag(tagWallOutside))
         {
             if (Direction == Vector2.right)
             {
