@@ -46,11 +46,7 @@ public class Ball : MonoBehaviour
 
         if (collision.gameObject.CompareTag(tagWallInProgress))
         {
-            // UI effect
             GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
-
-            // Game effect
-            Debug.Log("Game over!");
             GameManager.instance.IncreaseScore();
         }
     }
