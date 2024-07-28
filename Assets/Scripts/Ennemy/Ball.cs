@@ -36,7 +36,7 @@ public class Ball : MonoBehaviour
     {
         EmitParticle(8);
 
-        if (collision.gameObject.CompareTag(tagWallInProgress))
+        if (GameManager.instance.isTerritoryInProgress && collision.gameObject.CompareTag(tagWallInProgress))
         {
             Debug.Log("Touched the territory in progress!");
             GameManager.instance.screenShake.StartShake(0.33f, 0.1f);

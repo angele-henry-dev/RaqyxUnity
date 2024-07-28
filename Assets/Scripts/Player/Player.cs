@@ -11,15 +11,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     SpriteRenderer spriteRenderer;
     [SerializeField]
-    TrailRenderer trail;
 
     [Header("Config")]
-    [SerializeField]
     private float speed = 1.5f;
     [SerializeField]
     private Vector2 startPosition;
 
-    public bool isTerritoryInProgress = false;
+    TrailRenderer trail;
+
     public bool isReversed = false;
 
     public Vector2 Direction { get; private set; }
@@ -30,6 +29,11 @@ public class Player : MonoBehaviour
     private const string axisVertical = "Vertical";
     private const string tagWallOutside = "WallOutside";
     private const string tagEnnemy = "Ennemy";
+
+    private void Awake()
+    {
+        trail = GetComponent<TrailRenderer>();
+    }
 
     void Start()
     {
@@ -62,7 +66,7 @@ public class Player : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
 
-        if (collision.gameObject.CompareTag(tagEnnemy) && isTerritoryInProgress)
+        if (collision.gameObject.CompareTag(tagEnnemy) && GameManager.instance.isTerritoryInProgress)
             HandleCollisionEnnemy();
         else if (collision.gameObject.CompareTag(tagWallOutside))
             HandleCollisionOutsideWall();
@@ -81,7 +85,7 @@ public class Player : MonoBehaviour
         (newDirection == Vector2.down && Direction == Vector2.up))
             return false;
 
-        if (!isTerritoryInProgress)
+        if (!GameManager.instance.isTerritoryInProgress)
         {
             // IF WALL in new direction NO
             if ((Direction == Vector2.left && newDirection == Vector2.down) ||
@@ -212,7 +216,7 @@ public class Player : MonoBehaviour
 
     private void SetTerritoryInProgress(bool inProgress)
     {
-        isTerritoryInProgress = inProgress;
+        GameManager.instance.isTerritoryInProgress = inProgress;
         trail.enabled = inProgress;
         if (!inProgress)
             trail.Clear();

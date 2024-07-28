@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [Header("Config")]
     public int score = 0;
     public int maxScore = 1;
+    public bool isTerritoryInProgress = false;
 
     public GameMode gameMode = GameMode.NORMAL;
 

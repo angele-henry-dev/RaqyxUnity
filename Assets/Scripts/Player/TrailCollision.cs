@@ -7,9 +7,11 @@ public class TrailColision : MonoBehaviour
     TrailRenderer trail;
     EdgeCollider2D trailCollider;
 
+    private const string tagEnnemy = "Ennemy";
+
     static List<EdgeCollider2D> unusedColliders = new();
 
-    void Start()
+    void Awake()
     {
         trail = GetComponent<TrailRenderer>();
         trailCollider = GetValidCollider();
@@ -40,20 +42,26 @@ public class TrailColision : MonoBehaviour
         }
         else
         {
-            validCollider = new GameObject("TrailCollider", typeof(EdgeCollider2D)).GetComponent<EdgeCollider2D>();
+            GameObject gameObject = new("TrailCollider", typeof(EdgeCollider2D));
+            gameObject.tag = "WallInProgress";
+            gameObject.layer = 8;
+            validCollider = gameObject.GetComponent<EdgeCollider2D>();
         }
         return validCollider;
-        //return GetComponent<EdgeCollider2D>();
     }
 
     private void SetColliderPointsFromTrail(TrailRenderer trail, EdgeCollider2D collider)
     {
         List<Vector2> points = new();
-        // Avoid having default points at (-.5,0),(.5,0)
+        // Avoid having default points at (0,0),(0,0)
         if (trail.positionCount == 0)
         {
             points.Add(transform.position);
             points.Add(transform.position);
+            /*for (int i=0; i<points.Count; i++)
+            {
+                Debug.Log($"{points[i].x}:{points[i].y}");
+            }*/
         }
         else for (int position = 0; position < trail.positionCount; position++)
             {
