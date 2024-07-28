@@ -15,12 +15,7 @@ public class GameManager : MonoBehaviour
     public int maxScore = 1;
     public bool isTerritoryInProgress = false;
 
-    public GameMode gameMode = GameMode.NORMAL;
-
-    public enum GameMode
-    {
-        NORMAL
-    }
+    public readonly Enums.GameMode gameMode = Enums.GameMode.NORMAL;
 
     void Awake()
     {

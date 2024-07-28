@@ -1,6 +1,11 @@
 
 public class Enums
 {
+    public enum GameMode
+    {
+        NORMAL
+    }
+
     public enum Tags
     {
         Wall,
