@@ -1,62 +1,52 @@
 using UnityEngine;
 using Shapes2D;
-using System.Collections.Generic;
 
 public class PolygonGenerator : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField]
     private Shape shape;
-    [SerializeField]
-    private float decay;
+    public bool isTransparent = false;
+    public Vector2[] points;
 
-    Vector2[] points;
-
-    void Awake()
+    public void DesignPolygon(Color fillColor, Color outlineColor)
     {
-        EventManager.StartListening(EventManager.Event.onStartGame, GenerateInitialTerritory);
+        if (isTransparent)
+        {
+            Color transparent = new();
+            transparent.a = 0;
+            shape.settings.fillColor = transparent;
+            shape.settings.outlineColor = transparent;
+        }
+        else
+        {
+            shape.settings.fillColor = fillColor;
+            shape.settings.outlineColor = outlineColor;
+        }
     }
 
-    private void GenerateInitialTerritory(Dictionary<string, object> message = null)
+    public void UpdatePolygon(Vector2[] newPoints)
     {
-        if (message.TryGetValue("polygonPoints", out object value))
-        {
-            points = (Vector2[]) value;
-            if (decay > 0f)
-            {
-                for (int i = 0; i < points.Length; i++)
-                {
-                    points[i].y = points[i].y > 0 ? (points[i].y + (decay)) : (points[i].y - (decay));
-                    points[i].x = points[i].x > 0 ? (points[i].x + (decay)) : (points[i].x - (decay));
-                }
-            }
-        }
-
-        // shape.settings.fillColor = Color.clear;
-        // shape.settings.outlineColor = Color.white;
+        // Remove it after everything is working
+        points = newPoints;
 
         // Apply new points to the shape
-        shape.settings.polyVertices = points;
+        shape.settings.polyVertices = newPoints;
 
         // Add the points to the collider
         EdgeCollider2D collider = gameObject.AddComponent<EdgeCollider2D>();
-        Vector2[] colliderpoints = new Vector2[points.Length + 1];
-        for (int i = 0; i < points.Length; i++)
+        Vector2[] colliderpoints = new Vector2[newPoints.Length + 1];
+        for (int i = 0; i < newPoints.Length; i++)
         {
             colliderpoints[i] = new Vector2(
-                (points[i].x < 0f) ? -0.5f : 0.5f,
-                (points[i].y < 0f) ? -0.5f : 0.5f
+                (newPoints[i].x < 0f) ? -0.5f : 0.5f,
+                (newPoints[i].y < 0f) ? -0.5f : 0.5f
             );
         }
-        colliderpoints[points.Length] = new Vector2(
-            (points[0].x < 0f) ? -0.5f : 0.5f,
-            (points[0].y < 0f) ? -0.5f : 0.5f
+        colliderpoints[newPoints.Length] = new Vector2(
+            (newPoints[0].x < 0f) ? -0.5f : 0.5f,
+            (newPoints[0].y < 0f) ? -0.5f : 0.5f
         ); // Close the loop
         collider.points = colliderpoints;
-    }
-
-    public void UpdateInitialTerritory()
-    {
-        // Implement any necessary updates to the polygon here
     }
 }
