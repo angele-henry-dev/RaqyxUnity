@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CircleCollider2D))]
 public class Ball : MonoBehaviour
 {
     [Header("Refs")]
@@ -36,6 +38,7 @@ public class Ball : MonoBehaviour
 
         if (collision.gameObject.CompareTag(tagWallInProgress))
         {
+            Debug.Log("Touched the territory in progress!");
             GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
             GameManager.instance.IncreaseScore();
         }

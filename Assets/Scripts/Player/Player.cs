@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CircleCollider2D))]
 public class Player : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField]
-    private Rigidbody2D rb2d;
+    Rigidbody2D rb2d;
     [SerializeField]
-    private SpriteRenderer spriteRenderer;
+    SpriteRenderer spriteRenderer;
     [SerializeField]
-    private PolygonGenerator polygonGenerator;
+    TrailRenderer trail;
 
     [Header("Config")]
     [SerializeField]
@@ -146,13 +148,21 @@ public class Player : MonoBehaviour
         Vector2 newDirection = Vector2.zero;
 
         if (verticalMovement > 0)
+        {
             newDirection = Vector2.up;
+        }
         else if (verticalMovement < 0)
+        {
             newDirection = Vector2.down;
+        }
         else if (horizontalMovement < 0)
+        {
             newDirection = Vector2.left;
+        }
         else if (horizontalMovement > 0)
+        {
             newDirection = Vector2.right;
+        }
 
         // If the new direction is valid then let's draw a territory!
         if (Valid(newDirection))
@@ -203,5 +213,8 @@ public class Player : MonoBehaviour
     private void SetTerritoryInProgress(bool inProgress)
     {
         isTerritoryInProgress = inProgress;
+        trail.enabled = inProgress;
+        if (!inProgress)
+            trail.Clear();
     }
 }

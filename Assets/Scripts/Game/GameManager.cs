@@ -34,6 +34,16 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        ResetGame();
+    }
+
+    void OnDestroy()
+    {
+        EventManager.StopListening(EventManager.Event.onStartGame, OnStartGame);
+    }
+
+    public void ResetGame()
+    {
         Dictionary<string, object> message = new();
         Vector2[] polygonPoints = {
             new Vector2(-2f, 4f),
@@ -43,11 +53,6 @@ public class GameManager : MonoBehaviour
         };
         message.Add("polygonPoints", polygonPoints);
         EventManager.TriggerEvent(EventManager.Event.onStartGame, message);
-    }
-
-    void OnDestroy()
-    {
-        EventManager.StopListening(EventManager.Event.onStartGame, OnStartGame);
     }
 
     public void IncreaseScore()
@@ -65,7 +70,7 @@ public class GameManager : MonoBehaviour
         } else
         {
             instance.gameAudio.PlayHitPlayerSound();
-            EventManager.TriggerEvent(EventManager.Event.onReset, null);
+            ResetGame();
         }
     }
 

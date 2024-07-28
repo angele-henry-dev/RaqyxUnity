@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6282711622604882545}
   - component: {fileID: 8162321324443477051}
   - component: {fileID: 8973768363974867362}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CollisionParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4898,7 +4898,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3912759265439110242}
   - component: {fileID: 1337337479468214842}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BallSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5097,7 +5097,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6939116437437777489}
   - component: {fileID: 2810595217666149844}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

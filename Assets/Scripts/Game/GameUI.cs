@@ -27,7 +27,7 @@ public class GameUI : MonoBehaviour
     public void OnStartGameButtonClicked()
     {
         menuObject.SetActive(false);
-        EventManager.TriggerEvent(EventManager.Event.onStartGame, null);
+        //EventManager.TriggerEvent(EventManager.Event.onStartGame, null);
     }
 
     public void OnQuitButtonClicked()
