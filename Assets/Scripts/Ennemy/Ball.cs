@@ -17,8 +17,7 @@ public class Ball : MonoBehaviour
     private float maxInitialAngle = 0.67f;
     [SerializeField]
     private float moveSpeed = 1f;
-
-    private const string tagWallInProgress = "WallInProgress";
+    private readonly string tagWallInProgress = Enums.GetTagsValue(Enums.Tags.WallInProgress);
 
     void Start()
     {
@@ -38,7 +37,6 @@ public class Ball : MonoBehaviour
 
         if (GameManager.instance.isTerritoryInProgress && collision.gameObject.CompareTag(tagWallInProgress))
         {
-            Debug.Log("Touched the territory in progress!");
             GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
             GameManager.instance.IncreaseScore();
         }

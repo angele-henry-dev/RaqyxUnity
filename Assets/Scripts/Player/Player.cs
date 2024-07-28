@@ -24,11 +24,10 @@ public class Player : MonoBehaviour
     public Vector2 Direction { get; private set; }
     public Vector2 NextDirection { get; private set; }
 
-    //private float playerDecay;
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
-    private const string tagWallOutside = "WallOutside";
-    private const string tagEnnemy = "Ennemy";
+    private readonly string tagEnnemy = Enums.GetTagsValue(Enums.Tags.Ennemy);
+    private readonly string tagWallOutside = Enums.GetTagsValue(Enums.Tags.WallOutside);
 
     private void Awake()
     {

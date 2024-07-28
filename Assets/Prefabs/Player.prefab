@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3611459471552622941}
+  - component: {fileID: 1394904954786676291}
   - component: {fileID: 7529831833889658763}
   - component: {fileID: 4390568821096359437}
   - component: {fileID: 7947806740190235522}
@@ -37,6 +38,18 @@ Transform:
   - {fileID: 7986045109350418609}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1394904954786676291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 411215735242130721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df7b97e0e6c1547d194a3cd850341d44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7529831833889658763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53,7 +66,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 2572991642246350410}
   speed: 1.5
   startPosition: {x: -2, y: 3}
-  isTerritoryInProgress: 0
   isReversed: 0
 --- !u!50 &4390568821096359437
 Rigidbody2D:
