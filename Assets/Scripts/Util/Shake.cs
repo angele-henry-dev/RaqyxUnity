@@ -6,7 +6,7 @@ public class Shake : MonoBehaviour
 {
     private Vector3 initialPosition;
 
-    private void Awake()
+    void Awake()
     {
         initialPosition = transform.localPosition;
     }

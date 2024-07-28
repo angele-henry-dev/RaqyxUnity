@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
         NORMAL
     }
 
-    private void Awake()
+    void Awake()
     {
         if (instance)
             Destroy(gameObject);
@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    void Start()
     {
         Dictionary<string, object> message = new();
         Vector2[] polygonPoints = {
@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
         EventManager.TriggerEvent(EventManager.Event.onStartGame, message);
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         EventManager.StopListening(EventManager.Event.onStartGame, OnStartGame);
     }

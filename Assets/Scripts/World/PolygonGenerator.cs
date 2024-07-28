@@ -12,29 +12,12 @@ public class PolygonGenerator : MonoBehaviour
 
     Vector2[] points;
 
-    private void Awake()
+    void Awake()
     {
-        // GeneratePolygon();
-        EventManager.StartListening(EventManager.Event.onStartGame, GeneratePolygon);
+        EventManager.StartListening(EventManager.Event.onStartGame, GenerateInitialTerritory);
     }
 
-    /*private void GenerateOutsidePolygon()
-    {
-        Vector2 size = spriteDecay.transform.localScale;
-        float decay = size.x - 0.1f;
-
-        List<Vector2> pointList = GetPoints();
-        Vector2 [] points = pointList.ToArray();
-        for (int i = 0; i < points.Length; i++)
-        {
-            points[i].y -= 1;
-
-            points[i].y = points[i].y > 0 ? (points[i].y + (decay)) : (points[i].y - (decay));
-            points[i].x = points[i].x > 0 ? (points[i].x + (decay)) : (points[i].x - (decay));
-        }
-    }*/
-
-    private void GeneratePolygon(Dictionary<string, object> message = null)
+    private void GenerateInitialTerritory(Dictionary<string, object> message = null)
     {
         if (message.TryGetValue("polygonPoints", out object value))
         {
@@ -43,15 +26,13 @@ public class PolygonGenerator : MonoBehaviour
             {
                 for (int i = 0; i < points.Length; i++)
                 {
-                    // points[i].y -= 1;
-
                     points[i].y = points[i].y > 0 ? (points[i].y + (decay)) : (points[i].y - (decay));
                     points[i].x = points[i].x > 0 ? (points[i].x + (decay)) : (points[i].x - (decay));
                 }
             }
         }
 
-        shape.settings.fillColor = Color.clear;
+        // shape.settings.fillColor = Color.clear;
         // shape.settings.outlineColor = Color.white;
 
         // Apply new points to the shape
@@ -72,11 +53,9 @@ public class PolygonGenerator : MonoBehaviour
             (points[0].y < 0f) ? -0.5f : 0.5f
         ); // Close the loop
         collider.points = colliderpoints;
-
-        UpdatePolygon();
     }
 
-    private void UpdatePolygon()
+    public void UpdateInitialTerritory()
     {
         // Implement any necessary updates to the polygon here
     }

@@ -18,16 +18,27 @@ public class Ball : MonoBehaviour
 
     private const string tagWallInProgress = "WallInProgress";
 
-    private void Start()
+    void Start()
     {
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
         EventManager.StartListening(EventManager.Event.onStartGame, ResetPosition);
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         EventManager.StopListening(EventManager.Event.onReset, ResetPosition);
         EventManager.StopListening(EventManager.Event.onStartGame, ResetPosition);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        EmitParticle(8);
+
+        if (collision.gameObject.CompareTag(tagWallInProgress))
+        {
+            GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
+            GameManager.instance.IncreaseScore();
+        }
     }
 
     private void ResetPosition(Dictionary<string, object> message=null)
@@ -38,17 +49,6 @@ public class Ball : MonoBehaviour
         Vector2 dir = Random.value < 0.5f ? Vector2.left : Vector2.right;
         dir.y = Random.value < 0.5f ? -maxInitialAngle : maxInitialAngle;
         rb2d.velocity = dir * moveSpeed;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        EmitParticle(8);
-
-        if (collision.gameObject.CompareTag(tagWallInProgress))
-        {
-            GameManager.instance.screenShake.StartShake(0.33f, 0.1f);
-            GameManager.instance.IncreaseScore();
-        }
     }
 
     private void EmitParticle(int amount)

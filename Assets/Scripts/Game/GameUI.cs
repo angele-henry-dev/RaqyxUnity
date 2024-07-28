@@ -12,7 +12,7 @@ public class GameUI : MonoBehaviour
     [SerializeField]
     private TMPro.TextMeshProUGUI volumeValueText;
 
-    private void Start()
+    void Start()
     {
         CheckDisableQuitButton();
     }
