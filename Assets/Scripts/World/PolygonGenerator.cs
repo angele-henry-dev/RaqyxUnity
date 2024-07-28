@@ -6,23 +6,12 @@ public class PolygonGenerator : MonoBehaviour
     [Header("Refs")]
     [SerializeField]
     private Shape shape;
-    public bool isTransparent = false;
     public Vector2[] points;
 
     public void DesignPolygon(Color fillColor, Color outlineColor)
     {
-        if (isTransparent)
-        {
-            Color transparent = new();
-            transparent.a = 0;
-            shape.settings.fillColor = transparent;
-            shape.settings.outlineColor = transparent;
-        }
-        else
-        {
-            shape.settings.fillColor = fillColor;
-            shape.settings.outlineColor = outlineColor;
-        }
+        shape.settings.fillColor = fillColor;
+        shape.settings.outlineColor = outlineColor;
     }
 
     public void UpdatePolygon(Vector2[] newPoints)
