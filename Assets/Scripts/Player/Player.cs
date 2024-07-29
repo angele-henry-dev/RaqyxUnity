@@ -178,6 +178,9 @@ public class Player : MonoBehaviour
             if (!GameManager.instance.isTerritoryInProgress)
             {
                 SetTerritoryInProgress(true);
+                CompleteTerritoryInProgress(true);
+            } else
+            {
                 CompleteTerritoryInProgress();
             }
         }
@@ -228,36 +231,24 @@ public class Player : MonoBehaviour
         if (!inProgress) trail.Clear();
     }
 
-    private Vector3[] GetTerritoryInProgressPoints()
-    {
-        Vector3[] points = new Vector3[trail.positionCount];
-        trail.GetPositions(points);
-        return points;
-    }
-
-    private void CompleteTerritoryInProgress()
+    private void CompleteTerritoryInProgress(bool firstPoint = false)
     {
         Vector3[] points = new Vector3[trail.positionCount];
         int count = trail.GetPositions(points);
 
-        if (GameManager.instance.isTerritoryInProgress) territoryInProgressPoints.Add(points[0]);
-        else territoryInProgressPoints.Add(points[count-1]);
-
-        territoryInProgressPoints.Clear();
+        if (firstPoint)
+        {
+            territoryInProgressPoints.Add(transform.position);
+        }
+        else
+        {
+            if (count < 2) return;
+            territoryInProgressPoints.Add(points[count - 1]);
+        }
     }
 
     private void CloseTerritoryInProgress()
     {
-        // Select only the useful points
-        /*Vector3[] points = GetTerritoryInProgressPoints();
-        int currentIndex = 0;
-        territoryInProgressPoints.Add(points[currentIndex]);
-
-        for (int i=0; i<points.Length; i++)
-        {
-            //territoryInProgressPoints.Add();
-        }*/
-
         CompleteTerritoryInProgress();
         initialTerritory.UpdateTerritory(territoryInProgressPoints);
         territoryInProgressPoints.Clear();

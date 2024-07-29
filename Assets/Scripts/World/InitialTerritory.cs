@@ -37,7 +37,7 @@ public class InitialTerritory : PolygonGenerator
         // TODO Add the newPoints to the current points
         for (int i=0; i<newPoints.Count; i++)
         {
-            Debug.Log($"{newPoints[i].x}:{newPoints[i].y}");
+            Debug.Log($"{newPoints[i].x} :: {newPoints[i].y}");
         }
     }
 }
