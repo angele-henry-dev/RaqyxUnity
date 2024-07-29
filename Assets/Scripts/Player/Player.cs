@@ -7,29 +7,28 @@ public class Player : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField]
-    Rigidbody2D rb2d;
+    private Rigidbody2D rb2d;
     [SerializeField]
-    SpriteRenderer spriteRenderer;
+    private SpriteRenderer spriteRenderer;
     [SerializeField]
+    private InitialTerritory initialTerritory;
 
     [Header("Config")]
-    private float speed = 1.5f;
-    [SerializeField]
-    private Vector2 startPosition;
-
-    TrailRenderer trail;
+    private readonly float speed = 1.5f;
 
     public bool isReversed = false;
-
     public Vector2 Direction { get; private set; }
     public Vector2 NextDirection { get; private set; }
+    public List<Vector2> territoryInProgressPoints;
 
+    private TrailRenderer trail;
+    private Vector2 startPosition;
     private const string axisHorizontal = "Horizontal";
     private const string axisVertical = "Vertical";
     private readonly string tagEnnemy = Enums.GetTagsValue(Enums.Tags.Ennemy);
     private readonly string tagWallOutside = Enums.GetTagsValue(Enums.Tags.WallOutside);
 
-    private void Awake()
+    void Awake()
     {
         trail = GetComponent<TrailRenderer>();
     }
@@ -128,6 +127,11 @@ public class Player : MonoBehaviour
         Vector2 pushOut = rb2d.position * -pushOutFactor;
         rb2d.position += pushOut;
 
+        if (GameManager.instance.isTerritoryInProgress)
+        {
+            CloseTerritoryInProgress();
+        }
+
         SetTerritoryInProgress(false);
     }
 
@@ -171,7 +175,7 @@ public class Player : MonoBehaviour
         if (Valid(newDirection))
         {
             SetDirection(newDirection);
-            SetTerritoryInProgress(true);
+            if (!GameManager.instance.isTerritoryInProgress) SetTerritoryInProgress(true);
         }
     }
 
@@ -217,7 +221,26 @@ public class Player : MonoBehaviour
     {
         GameManager.instance.isTerritoryInProgress = inProgress;
         trail.enabled = inProgress;
-        if (!inProgress)
-            trail.Clear();
+        if (!inProgress) trail.Clear();
+    }
+
+    private Vector3[] GetTerritoryInProgressPoints()
+    {
+        Vector3[] points = new Vector3[trail.positionCount];
+        //int count = trail.GetPositions(points);
+        trail.GetPositions(points);
+        return points;
+
+        //if (!GameManager.instance.isTerritoryInProgress) territoryInProgressPoints.Add(points[0]);
+        //else territoryInProgressPoints.Add(points[count-1]);
+    }
+
+    private void CloseTerritoryInProgress()
+    {
+        // Select only the useful points
+        Vector3[] points = GetTerritoryInProgressPoints();
+
+        initialTerritory.UpdateTerritory(territoryInProgressPoints);
+        territoryInProgressPoints.Clear();
     }
 }

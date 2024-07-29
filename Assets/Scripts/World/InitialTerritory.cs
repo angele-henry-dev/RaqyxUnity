@@ -31,4 +31,13 @@ public class InitialTerritory : PolygonGenerator
             UpdatePolygon(newPoints);
         }
     }
+
+    public void UpdateTerritory(List<Vector2> newPoints)
+    {
+        // TODO Add the newPoints to the current points
+        for (int i=0; i<newPoints.Count; i++)
+        {
+            Debug.Log($"{newPoints[i].x}:{newPoints[i].y}");
+        }
+    }
 }
