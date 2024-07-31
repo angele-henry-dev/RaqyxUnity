@@ -42,31 +42,75 @@ public class InitialTerritory : PolygonGenerator
     // Method to cut out the new shape from the existing polygon
     public void CutOutShape(Vector2[] newShapePoints)
     {
+
+        Vector2[] test = {
+            new Vector2(-2f, 4f),
+            new Vector2(2f, 4f),
+            new Vector2(2f, -2f),
+            new Vector2(-2f, -2f),
+            new Vector2(-2f, 4f)
+        };
+        Vector2[] newTest = {
+            new Vector2(1f, 4f),
+            new Vector2(1f, 1f),
+            new Vector2(2f, 1f),
+            new Vector2(2f, 4f),
+            new Vector2(1f, 4f)
+        };
+
         // Convert to Clipper paths
-        Path64 polygonPath = ToClipperPath(points);
-        Path64 shapePath = ToClipperPath(newShapePoints);
+        Path64 polygonPath = ToClipperPath(test);
+        Path64 shapePath = ToClipperPath(newTest);
+        Debug.Log("**************************************");
+        Debug.Log("polygonPath");
+        foreach (Point64 point in polygonPath)
+        {
+            Debug.Log($"{point.X} :: {point.Y}");
+        }
+        Debug.Log("**************************************");
+        Debug.Log("shapePath");
+        foreach (Point64 point in shapePath)
+        {
+            Debug.Log($"{point.X} :: {point.Y}");
+        }
 
-        // Perform the clipping operation
-        Clipper clipper = new Clipper();
-        clipper.AddSubject(polygonPath);
-        clipper.AddClip(shapePath);
+        // Prepare Paths64 collections
+        Paths64 subject = new() { polygonPath };
+        Paths64 clip = new() { shapePath };
 
-        Paths64 solution = new Paths64();
-        clipper.Execute(ClipType.Difference, FillRule.NonZero, solution);
+        // Perform the clipping operation using static methods
+        Paths64 solution = Clipper.Difference(subject, clip, FillRule.NonZero);
 
         // Convert the solution back to Vector2
         if (solution.Count > 0)
         {
-            List<Vector2> newPolygonPoints = ToVector2List(solution[0]);
-            points = newPolygonPoints;
-            UpdatePolygon(newPolygonPoints.ToArray());
+            Vector2[] newPolygonPoints = ToVector2List(solution[0]);
+            Debug.Log("**************************************");
+            Debug.Log("newPolygonPoints");
+            foreach (Point64 point in solution[0])
+            {
+                Debug.Log($"{point.X} :: {point.Y}");
+            }
+            UpdatePolygon(newPolygonPoints);
         }
+
+        // TEST
+        /*Paths64 subj = new Paths64();
+        Paths64 clip = new Paths64();
+        subj.Add(Clipper.MakePath(new int[] { 100, 50, 10, 79, 65, 2, 65, 98, 10, 21 }));
+        clip.Add(Clipper.MakePath(new int[] { 98, 63, 4, 68, 77, 8, 52, 100, 19, 12 }));
+        Paths64 solution = Clipper.Difference(subj, clip, FillRule.NonZero);
+        if (solution.Count > 0)
+        {
+            Vector2[] newPolygonPoints = ToVector2List(solution[0]);
+            UpdatePolygon(newPolygonPoints);
+        }*/
     }
 
     // Helper method to convert Vector2 to Clipper Path64
-    private Path64 ToClipperPath(List<Vector2> vectorPath)
+    private Path64 ToClipperPath(Vector2[] vectorPath)
     {
-        Path64 path = new Path64(vectorPath.Count);
+        Path64 path = new(vectorPath.Length);
         foreach (Vector2 vec in vectorPath)
         {
             path.Add(new Point64((long)(vec.x * 1000), (long)(vec.y * 1000)));
@@ -75,12 +119,12 @@ public class InitialTerritory : PolygonGenerator
     }
 
     // Helper method to convert Clipper Path64 to Vector2
-    private List<Vector2> ToVector2List(Path64 intPath)
+    private Vector2[] ToVector2List(Path64 intPath)
     {
-        List<Vector2> vectorPath = new List<Vector2>(intPath.Count);
-        foreach (Point64 ip in intPath)
+        Vector2[] vectorPath = new Vector2[intPath.Count];
+        for (int i = 0; i < intPath.Count; i++)
         {
-            vectorPath.Add(new Vector2(ip.X / 1000.0f, ip.Y / 1000.0f));
+            vectorPath[i] = (new Vector2(intPath[i].X / 1000.0f, intPath[i].Y / 1000.0f));
         }
         return vectorPath;
     }
