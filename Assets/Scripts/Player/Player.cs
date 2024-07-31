@@ -23,8 +23,10 @@ public class Player : MonoBehaviour
 
     private TrailRenderer trail;
     private Vector2 startPosition;
-    private const string axisHorizontal = "Horizontal";
-    private const string axisVertical = "Vertical";
+
+    private readonly string axisHorizontal = "Horizontal";
+    private readonly string axisVertical = "Vertical";
+    private readonly float pushOutFactor = 0.01f;
     private readonly string tagEnnemy = Enums.GetTagsValue(Enums.Tags.Ennemy);
     private readonly string tagWallOutside = Enums.GetTagsValue(Enums.Tags.WallOutside);
 
@@ -37,7 +39,7 @@ public class Player : MonoBehaviour
     {
         // Initialize the starting position, the direction and the territory
         Vector2 size = spriteRenderer.transform.localScale;
-        startPosition = new(x: -1.5f, y: 3f + (size.x / 2f));
+        startPosition = new(x: -1.5f, y: 3.16f);
         SetDirection(Vector2.right);
         SetTerritoryInProgress(false);
 
@@ -111,8 +113,6 @@ public class Player : MonoBehaviour
 
     private void HandleCollisionOutsideWall()
     {
-        const float pushOutFactor = 0.01f;
-
         // Determine the next direction based on the current direction and whether the movement is reversed
         NextDirection = Direction switch
         {
@@ -231,12 +231,12 @@ public class Player : MonoBehaviour
         if (!inProgress) trail.Clear();
     }
 
-    private void CompleteTerritoryInProgress(bool firstPoint = false)
+    private void CompleteTerritoryInProgress(bool takePoint = false)
     {
         Vector3[] points = new Vector3[trail.positionCount];
         int count = trail.GetPositions(points);
 
-        if (firstPoint)
+        if (takePoint)
         {
             territoryInProgressPoints.Add(transform.position);
         }
@@ -249,7 +249,7 @@ public class Player : MonoBehaviour
 
     private void CloseTerritoryInProgress()
     {
-        CompleteTerritoryInProgress();
+        CompleteTerritoryInProgress(true);
         initialTerritory.UpdateTerritory(territoryInProgressPoints);
         territoryInProgressPoints.Clear();
     }
