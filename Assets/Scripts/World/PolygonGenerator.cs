@@ -16,26 +16,32 @@ public class PolygonGenerator : MonoBehaviour
 
     public void UpdatePolygon(Vector2[] newPoints)
     {
-        // Remove it after everything is working
+        // I'll probably don't need it but I use it for the debug
         points = newPoints;
 
-        // Apply new points to the shape
+        // Apply the new points to the form
         shape.settings.polyVertices = newPoints;
 
-        // Add the points to the collider
-        EdgeCollider2D collider = gameObject.AddComponent<EdgeCollider2D>();
-        Vector2[] colliderpoints = new Vector2[newPoints.Length + 1];
+        // Remove the old colliders
+        foreach (var collider in GetComponents<EdgeCollider2D>())
+        {
+            Destroy(collider);
+        }
+
+        // Add a new EdgeCollider2D
+        EdgeCollider2D edgeCollider = gameObject.AddComponent<EdgeCollider2D>();
+
+        // Create an array of points for the collider, including the closing point
+        Vector2[] colliderPoints = new Vector2[newPoints.Length + 1];
         for (int i = 0; i < newPoints.Length; i++)
         {
-            colliderpoints[i] = new Vector2(
-                (newPoints[i].x < 0f) ? -0.5f : 0.5f,
-                (newPoints[i].y < 0f) ? -0.5f : 0.5f
-            );
+            colliderPoints[i] = newPoints[i];
         }
-        colliderpoints[newPoints.Length] = new Vector2(
-            (newPoints[0].x < 0f) ? -0.5f : 0.5f,
-            (newPoints[0].y < 0f) ? -0.5f : 0.5f
-        ); // Close the loop
-        collider.points = colliderpoints;
+        // Close the loop adding the first point at the end
+        colliderPoints[newPoints.Length] = newPoints[0];
+
+        // Apply the points on the collider
+        edgeCollider.points = colliderPoints;
     }
+
 }

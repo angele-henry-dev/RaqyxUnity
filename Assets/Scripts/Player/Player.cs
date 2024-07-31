@@ -250,7 +250,8 @@ public class Player : MonoBehaviour
     private void CloseTerritoryInProgress()
     {
         CompleteTerritoryInProgress(true);
-        initialTerritory.UpdateTerritory(territoryInProgressPoints);
+        territoryInProgressPoints.Add(territoryInProgressPoints[0]);
+        initialTerritory.CutOutShape(territoryInProgressPoints.ToArray());
         territoryInProgressPoints.Clear();
     }
 }
