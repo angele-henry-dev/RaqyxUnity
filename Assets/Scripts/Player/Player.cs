@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-        trail = GetComponent<TrailRenderer>();
+        trail = GetComponentInChildren<TrailRenderer>();
     }
 
     void Start()
@@ -42,6 +42,9 @@ public class Player : MonoBehaviour
         startPosition = new(x: -1.5f, y: 3.16f);
         SetDirection(Vector2.right);
         SetTerritoryInProgress(false);
+
+        // Adjust the trail renderer position
+        //AdjustTrailRenderer();
 
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
         EventManager.StartListening(EventManager.Event.onStartGame, ResetPosition);
@@ -70,6 +73,11 @@ public class Player : MonoBehaviour
             HandleCollisionEnnemy();
         else if (collision.gameObject.CompareTag(tagWallOutside))
             HandleCollisionOutsideWall();
+    }
+
+    private void AdjustTrailRenderer()
+    {
+        trail.transform.localPosition = new Vector3(0, -spriteRenderer.bounds.extents.y, 0);
     }
 
     private bool Valid(Vector2 newDirection)
