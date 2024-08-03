@@ -8,6 +8,8 @@ public class InitialTerritory : PolygonGenerator
     [Header("Config")]
     public bool isTransparent = false;
 
+    private const float scale = 1000.0f; // Scale factor for converting to Clipper's integer coordinates
+
     void Awake()
     {
         EventManager.StartListening(EventManager.Event.onStartGame, GenerateInitialTerritory);
@@ -32,25 +34,18 @@ public class InitialTerritory : PolygonGenerator
             UpdatePolygon(newPoints);
         }
     }
-    /*Debug.Log("**************************************");
-    Debug.Log("newShapePoints");
-    foreach (Vector2 point in newShapePoints)
-    {
-        Debug.Log($"{point.x} :: {point.y}");
-    }*/
 
     // Method to cut out the new shape from the existing polygon
     public void CutOutShape(Vector2[] newShapePoints)
     {
+        Debug.Log("*************** Dynamic newShapePoints");
+        foreach (Vector2 point in newShapePoints)
+        {
+            Debug.Log($"{point.x} :: {point.y}");
+        }
 
-        Vector2[] test = {
-            new Vector2(-2f, 4f),
-            new Vector2(2f, 4f),
-            new Vector2(2f, -2f),
-            new Vector2(-2f, -2f),
-            new Vector2(-2f, 4f)
-        };
-        Vector2[] newTest = {
+        // Hardcoded points for comparison
+        Vector2[] hardcodedShapePoints = {
             new Vector2(1f, 4f),
             new Vector2(1f, 1f),
             new Vector2(2f, 1f),
@@ -58,53 +53,65 @@ public class InitialTerritory : PolygonGenerator
             new Vector2(1f, 4f)
         };
 
-        // Convert to Clipper paths
-        Path64 polygonPath = ToClipperPath(test);
-        Path64 shapePath = ToClipperPath(newTest);
-        Debug.Log("**************************************");
-        Debug.Log("polygonPath");
+        Debug.Log("*************** Hardcoded newShapePoints");
+        foreach (Vector2 point in hardcodedShapePoints)
+        {
+            Debug.Log($"{point.x} :: {point.y}");
+        }
+
+        // Convert to Clipper paths using original points
+        Path64 polygonPath = ToClipperPath(points);
+        Path64 dynamicShapePath = ToClipperPath(newShapePoints);
+        Path64 hardcodedShapePath = ToClipperPath(hardcodedShapePoints);
+
+        Debug.Log("*************** polygonPath");
         foreach (Point64 point in polygonPath)
         {
             Debug.Log($"{point.X} :: {point.Y}");
         }
-        Debug.Log("**************************************");
-        Debug.Log("shapePath");
-        foreach (Point64 point in shapePath)
+        Debug.Log("*************** dynamicShapePath");
+        foreach (Point64 point in dynamicShapePath)
+        {
+            Debug.Log($"{point.X} :: {point.Y}");
+        }
+        Debug.Log("*************** hardcodedShapePath");
+        foreach (Point64 point in hardcodedShapePath)
         {
             Debug.Log($"{point.X} :: {point.Y}");
         }
 
         // Prepare Paths64 collections
         Paths64 subject = new() { polygonPath };
-        Paths64 clip = new() { shapePath };
+        Paths64 dynamicClip = new() { dynamicShapePath };
+        Paths64 hardcodedClip = new() { hardcodedShapePath };
 
         // Perform the clipping operation using static methods
-        Paths64 solution = Clipper.Difference(subject, clip, FillRule.NonZero);
+        Paths64 dynamicSolution = Clipper.Difference(subject, dynamicClip, FillRule.NonZero);
+        Paths64 hardcodedSolution = Clipper.Difference(subject, hardcodedClip, FillRule.NonZero);
 
-        // Convert the solution back to Vector2
-        if (solution.Count > 0)
+        // Convert the dynamic solution back to Vector2
+        if (dynamicSolution.Count > 0)
         {
-            Vector2[] newPolygonPoints = ToVector2List(solution[0]);
-            Debug.Log("**************************************");
-            Debug.Log("newPolygonPoints");
-            foreach (Point64 point in solution[0])
+            Debug.Log("*************** dynamicSolution[0]");
+            foreach (Point64 point in dynamicSolution[0])
             {
                 Debug.Log($"{point.X} :: {point.Y}");
             }
+            Vector2[] newPolygonPoints = ToVector2List(dynamicSolution[0]);
             UpdatePolygon(newPolygonPoints);
         }
 
-        // TEST
-        /*Paths64 subj = new Paths64();
-        Paths64 clip = new Paths64();
-        subj.Add(Clipper.MakePath(new int[] { 100, 50, 10, 79, 65, 2, 65, 98, 10, 21 }));
-        clip.Add(Clipper.MakePath(new int[] { 98, 63, 4, 68, 77, 8, 52, 100, 19, 12 }));
-        Paths64 solution = Clipper.Difference(subj, clip, FillRule.NonZero);
-        if (solution.Count > 0)
+        // Convert the hardcoded solution back to Vector2
+        if (hardcodedSolution.Count > 0)
         {
-            Vector2[] newPolygonPoints = ToVector2List(solution[0]);
+            Debug.Log("*************** hardcodedSolution[0]");
+            foreach (Point64 point in hardcodedSolution[0])
+            {
+                Debug.Log($"{point.X} :: {point.Y}");
+            }
+            Vector2[] newPolygonPoints = ToVector2List(hardcodedSolution[0]);
             UpdatePolygon(newPolygonPoints);
-        }*/
+        }
     }
 
     // Helper method to convert Vector2 to Clipper Path64
@@ -113,7 +120,7 @@ public class InitialTerritory : PolygonGenerator
         Path64 path = new(vectorPath.Length);
         foreach (Vector2 vec in vectorPath)
         {
-            path.Add(new Point64((long)(vec.x * 1000), (long)(vec.y * 1000)));
+            path.Add(new Point64((long)(vec.x * scale), (long)(vec.y * scale)));
         }
         return path;
     }
@@ -124,7 +131,7 @@ public class InitialTerritory : PolygonGenerator
         Vector2[] vectorPath = new Vector2[intPath.Count];
         for (int i = 0; i < intPath.Count; i++)
         {
-            vectorPath[i] = (new Vector2(intPath[i].X / 1000.0f, intPath[i].Y / 1000.0f));
+            vectorPath[i] = new Vector2(intPath[i].X / scale, intPath[i].Y / scale);
         }
         return vectorPath;
     }
