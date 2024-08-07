@@ -43,9 +43,6 @@ public class Player : MonoBehaviour
         SetDirection(Vector2.right);
         SetTerritoryInProgress(false);
 
-        // Adjust the trail renderer position
-        //AdjustTrailRenderer();
-
         EventManager.StartListening(EventManager.Event.onReset, ResetPosition);
         EventManager.StartListening(EventManager.Event.onStartGame, ResetPosition);
     }
@@ -73,11 +70,6 @@ public class Player : MonoBehaviour
             HandleCollisionEnnemy();
         else if (collision.gameObject.CompareTag(tagWallOutside))
             HandleCollisionOutsideWall();
-    }
-
-    private void AdjustTrailRenderer()
-    {
-        trail.transform.localPosition = new Vector3(0, -spriteRenderer.bounds.extents.y, 0);
     }
 
     private bool Valid(Vector2 newDirection)
@@ -121,6 +113,13 @@ public class Player : MonoBehaviour
 
     private void HandleCollisionOutsideWall()
     {
+        if (GameManager.instance.isTerritoryInProgress)
+        {
+            CloseTerritoryInProgress();
+        }
+
+        SetTerritoryInProgress(false);
+
         // Determine the next direction based on the current direction and whether the movement is reversed
         NextDirection = Direction switch
         {
@@ -134,13 +133,6 @@ public class Player : MonoBehaviour
         // Move the player slightly to avoid staying against the wall
         Vector2 pushOut = rb2d.position * -pushOutFactor;
         rb2d.position += pushOut;
-
-        if (GameManager.instance.isTerritoryInProgress)
-        {
-            CloseTerritoryInProgress();
-        }
-
-        SetTerritoryInProgress(false);
     }
 
     private void HandlePlayerInput()
